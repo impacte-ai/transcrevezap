@@ -21,6 +21,12 @@ services:
       - REDIS_HOST=redis-transcrevezap
       - REDIS_PORT=6380 # Porta personalizada para o Redis do TranscreveZAP
       - REDIS_DB=0  # Opcional: pode ser removida para usar o valor padrão
+      - REDIS_USERNAME=impacteai # Usuário Redis
+      - REDIS_PASSWORD=trascrevezap # Senha Redis
+      - GROQ_API_KEY=gsk_abc123... # Chave da API GROQ (deve começar com 'gsk_')
+      - BUSINESS_MESSAGE=substitua_sua_mensagem_de_servico_aqui # Mensagem de rodapé após transcrição
+      - PROCESS_GROUP_MESSAGES=false # Habilita processamento de mensagens em grupos - Padrão "false"
+      - PROCESS_SELF_MESSAGES=true # Habilita processamento de mensagens enviadas por você - Padrão "true"
     depends_on:
       - redis-transcrevezap
     deploy:

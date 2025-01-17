@@ -19,11 +19,13 @@ class StorageHandler:
         self.logger.setLevel(logging.DEBUG)
         self.logger.info("StorageHandler inicializado.")
 
-        # Conexão com o Redis
+        # Conexão com o Redis usando username e password
         self.redis = redis.Redis(
             host=os.getenv('REDIS_HOST', 'localhost'),
-            port=int(os.getenv('REDIS_PORT', 6380)),
-            db=0,
+            port=int(os.getenv('REDIS_PORT', 6379)),
+            username=os.getenv('REDIS_USERNAME', 'default'),  # Nome de usuário padrão
+            password=os.getenv('REDIS_PASSWORD', ''),         # Senha padrão
+            db=int(os.getenv('REDIS_DB', 0)),                 # Banco de dados padrão
             decode_responses=True
         )
 

@@ -29,14 +29,28 @@ logger.addHandler(handler)
 # Nível de log inicial (pode ser ajustado após o carregamento de configurações)
 logger.setLevel(logging.INFO)
 
-# Conexão com o Redis
+# Conexão com o Redis usando username e password
 redis_client = redis.Redis(
     host=os.getenv('REDIS_HOST', 'localhost'),
-    port=int(os.getenv('REDIS_PORT', 6380)),
-    db=int(os.getenv('REDIS_DB', '0')),
+    port=int(os.getenv('REDIS_PORT', 6379)),
+    username=os.getenv('REDIS_USERNAME', 'default'),  # Nome de usuário padrão
+    password=os.getenv('REDIS_PASSWORD', ''),         # Senha padrão
+    db=int(os.getenv('REDIS_DB', 0)),                 # Banco de dados padrão
     decode_responses=True
 )
 
+# Testar conexão com Redis
+try:
+    redis_client.ping()
+    logger.info("Conexão com Redis estabelecida com sucesso!")
+except redis.exceptions.AuthenticationError:
+    logger.critical("Falha de autenticação no Redis. Verifique as credenciais.")
+    raise
+except Exception as e:
+    logger.critical(f"Erro ao conectar ao Redis: {e}")
+    raise
+
+# Classe Settings para gerenciar configurações
 class Settings:
     """Classe para gerenciar configurações do sistema."""
     def __init__(self):

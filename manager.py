@@ -15,10 +15,13 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# 2. Depois: Inicialização do Redis
+# Conexão com o Redis usando username e password
 redis_client = redis.Redis(
     host=os.getenv('REDIS_HOST', 'localhost'),
-    port=int(os.getenv('REDIS_PORT', 6380)),
+    port=int(os.getenv('REDIS_PORT', 6379)),
+    username=os.getenv('REDIS_USERNAME', 'default'),  # Nome de usuário padrão
+    password=os.getenv('REDIS_PASSWORD', ''),         # Senha padrão
+    db=int(os.getenv('REDIS_DB', 0)),                 # Banco de dados padrão
     decode_responses=True
 )
 
