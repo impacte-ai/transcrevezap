@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== AUTH & RBAC ====================
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  role         Role     @relation(fields: [roleId], references: [id])
+  roleId       String
+  sessions     Session[]
+  auditLogs    AuditLog[]
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  isSystem    Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  permissions Permission[]
+  users       User[]
+}
+
+model Permission {
+  id      String @id @default(cuid())
+  role    Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId  String
+  entity  String
+  actions String
+
+  @@unique([roleId, entity])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}
+
+// ==================== CONNECTIONS ====================
+
+model Connection {
+  id             String    @id @default(cuid())
+  name           String
+  provider       String
+  status         String    @default("disconnected")
+  apiUrl         String
+  apiKey         String?
+  instanceName   String?
+  providerToken  String?
+  phoneNumber    String?
+  phoneName      String?
+  phonePhoto     String?
+  webhookPath    String    @unique
+  isActive       Boolean   @default(true)
+  connectedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  transcriptions Transcription[]
+}
+
+// ==================== TRANSCRIPTION ====================
+
+model Transcription {
+  id           String     @id @default(cuid())
+  connection   Connection @relation(fields: [connectionId], references: [id])
+  connectionId String
+  remoteJid    String
+  messageId    String
+  isGroup      Boolean    @default(false)
+  originalText String
+  summary      String?
+  language     String?
+  duration     Float?
+  provider     String
+  model        String
+  processingMs Int?
+  outputMode   String
+  status       String     @default("completed")
+  error        String?
+  createdAt    DateTime   @default(now())
+}
+
+// ==================== WEBHOOK HUB ====================
+
+model WebhookRedirect {
+  id               String                    @id @default(cuid())
+  url              String
+  description      String?
+  isActive         Boolean                   @default(true)
+  successCount     Int                       @default(0)
+  errorCount       Int                       @default(0)
+  lastSuccess      DateTime?
+  lastError        DateTime?
+  lastErrorMsg     String?
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+  failedDeliveries WebhookDeliveryFailure[]
+}
+
+model WebhookDeliveryFailure {
+  id         String          @id @default(cuid())
+  webhook    WebhookRedirect @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+  webhookId  String
+  payload    String
+  statusCode Int?
+  error      String?
+  retryCount Int             @default(0)
+  createdAt  DateTime        @default(now())
+}
+
+// ==================== SETTINGS & MODELS ====================
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model ProviderModel {
+  id        String   @id @default(cuid())
+  provider  String
+  modelId   String
+  name      String
+  type      String
+  metadata  String?
+  updatedAt DateTime @updatedAt
+
+  @@unique([provider, modelId])
+  @@index([provider, type])
+}
+
+// ==================== ACCESS CONTROL ====================
+
+model AllowedGroup {
+  id        String   @id @default(cuid())
+  groupJid  String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+}
+
+model BlockedUser {
+  id        String   @id @default(cuid())
+  userJid   String   @unique
+  reason    String?
+  createdAt DateTime @default(now())
+}
+
+// ==================== LANGUAGE ====================
+
+model ContactLanguage {
+  id           String   @id @default(cuid())
+  contactJid   String   @unique
+  language     String
+  autoDetected Boolean  @default(false)
+  confidence   Float?
+  updatedAt    DateTime @updatedAt
+}
+
+// ==================== AUDIT ====================
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  details   String?
+  ip        String?
+  createdAt DateTime @default(now())
+}

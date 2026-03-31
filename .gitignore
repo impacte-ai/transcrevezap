@@ -8,3 +8,20 @@ deploy_producao.sh
 Dockerfile
 manager_atualizar.py
 roadmap.md
+
+# Fluxo de IA local (nunca commitar)
+CLAUDE.md
+.claude/
+docs/
+
+# Dependencies
+node_modules/
+
+# Database files (generated)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Lock file (managed by pnpm)
+pnpm-lock.yaml
