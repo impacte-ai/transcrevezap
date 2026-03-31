@@ -1,12 +1,11 @@
-name: Release (Production)
+name: Release (Dev/Canary)
 
 on:
   push:
     tags:
-      - 'v*'
-      - '!v*-dev*'
-      - '!v*-rc*'
-      - '!v*-beta*'
+      - 'v*-dev*'
+      - 'v*-rc*'
+      - 'v*-beta*'
 
 env:
   IMAGE_NAME: impacteai/transcrevezap
@@ -43,26 +42,31 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.VERSION }}
-            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:dev
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Create GitHub Release
+      - name: Create GitHub Pre-Release
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
-          make_latest: true
-          name: "v${{ steps.version.outputs.VERSION }}"
+          prerelease: true
+          make_latest: false
+          name: "v${{ steps.version.outputs.VERSION }} (Canary)"
           body: |
-            ## TranscreveZAP v${{ steps.version.outputs.VERSION }}
+            ## TranscreveZAP v${{ steps.version.outputs.VERSION }} — Canary
 
-            **Release de producao** — testada e homologada.
+            **Release de desenvolvimento** — para testes. Nao usar em producao.
 
             ### Docker
             ```bash
             docker pull impacteai/transcrevezap:${{ steps.version.outputs.VERSION }}
             # ou
-            docker pull impacteai/transcrevezap:latest
+            docker pull impacteai/transcrevezap:dev
             ```
 
-            Veja o [CHANGELOG](CHANGELOG.md) para detalhes completos.
+            ### Diferenca entre tags
+            - `:dev` — sempre a ultima versao de desenvolvimento
+            - `:latest` — sempre a ultima versao estavel de producao
+            - `:X.Y.Z.W` — versao especifica de producao
+            - `:X.Y.Z.W-devN` — versao especifica de desenvolvimento
