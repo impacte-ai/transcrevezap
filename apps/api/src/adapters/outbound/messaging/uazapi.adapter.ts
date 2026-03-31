@@ -35,7 +35,11 @@ export class UazapiMessagingAdapter implements MessagingPort, MediaPort {
       text: options.text,
     };
     if (options.replyToMessageId) {
-      body.replyid = options.replyToMessageId;
+      // Strip owner: prefix if present (UAZAPI expects just the hash)
+      const colonIdx = options.replyToMessageId.lastIndexOf(':');
+      body.replyid = colonIdx >= 0
+        ? options.replyToMessageId.substring(colonIdx + 1)
+        : options.replyToMessageId;
     }
 
     const response = await this.client.post('/send/text', body, { headers: this.headers });
