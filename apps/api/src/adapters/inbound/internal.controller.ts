@@ -1,4 +1,6 @@
 import { Controller, Get, Post, Delete, Body, Param, Query, Inject, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 import { CONNECTION_USE_CASE, ConnectionUseCase, CreateConnectionData } from '../../domain/ports/inbound/connection.use-case';
 import { WEBHOOK_HUB_USE_CASE, WebhookHubUseCase } from '../../domain/ports/inbound/webhook-hub.use-case';
 import { STORAGE_PORT, StoragePort } from '../../domain/ports/outbound/storage.port';
@@ -13,6 +15,7 @@ export class InternalController {
     @Inject(STORAGE_PORT) private readonly storage: StoragePort,
     @Inject(CACHE_PORT) private readonly cache: CachePort,
     private readonly modelManagement: ModelManagementService,
+    @InjectQueue('webhook-deliveries') private readonly webhookQueue: Queue,
   ) {}
 
   // ---- Connections ----
@@ -72,6 +75,32 @@ export class InternalController {
   async removeWebhook(@Param('id') id: string) {
     await this.webhookHub.removeRedirect(id);
     return { success: true };
+  }
+
+  @Get('webhooks/:id/failures')
+  async getWebhookFailures(@Param('id') id: string) {
+    return this.storage.findWebhookFailures(id);
+  }
+
+  @Post('webhooks/:webhookId/failures/:failureId/retry')
+  async retryWebhookFailure(
+    @Param('webhookId') webhookId: string,
+    @Param('failureId') failureId: string,
+  ) {
+    await this.webhookHub.retryFailed(webhookId, failureId);
+    return { success: true };
+  }
+
+  @Get('webhooks/queue/stats')
+  async getWebhookQueueStats() {
+    const [waiting, active, completed, failed, delayed] = await Promise.all([
+      this.webhookQueue.getWaitingCount(),
+      this.webhookQueue.getActiveCount(),
+      this.webhookQueue.getCompletedCount(),
+      this.webhookQueue.getFailedCount(),
+      this.webhookQueue.getDelayedCount(),
+    ]);
+    return { waiting, active, completed, failed, delayed };
   }
 
   // ---- Settings ----

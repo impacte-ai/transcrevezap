@@ -34,6 +34,7 @@ import { InternalController } from './adapters/inbound/internal.controller';
     ConnectionModule,
     MessagingModule,
     ModelManagementModule,
+    BullModule.registerQueue({ name: 'webhook-deliveries' }),
   ],
   controllers: [HealthController, InternalController],
 })

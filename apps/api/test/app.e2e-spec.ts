@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
+import { getQueueToken } from '@nestjs/bullmq';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/infrastructure/modules/prisma.service';
 import { RedisService } from '../src/infrastructure/modules/redis.service';
+import { WebhookDeliveryProcessor } from '../src/adapters/outbound/webhook/webhook-delivery.processor';
 
 describe('Health Check (e2e)', () => {
   let app: INestApplication;
@@ -26,6 +28,18 @@ describe('Health Check (e2e)', () => {
         publisher: { quit: jest.fn() },
         onModuleDestroy: jest.fn(),
       })
+      .overrideProvider(getQueueToken('webhook-deliveries'))
+      .useValue({
+        add: jest.fn(),
+        addBulk: jest.fn(),
+        getWaitingCount: jest.fn().mockResolvedValue(0),
+        getActiveCount: jest.fn().mockResolvedValue(0),
+        getCompletedCount: jest.fn().mockResolvedValue(0),
+        getFailedCount: jest.fn().mockResolvedValue(0),
+        getDelayedCount: jest.fn().mockResolvedValue(0),
+      })
+      .overrideProvider(WebhookDeliveryProcessor)
+      .useValue({ process: jest.fn() })
       .compile();
 
     app = moduleFixture.createNestApplication();
