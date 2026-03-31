@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { useState, Suspense } from 'react';
 import { signIn } from '@/lib/auth-client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
@@ -34,81 +34,74 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-          {error}
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="w-full max-w-sm">
+        <div className="flex flex-col items-center space-y-3 mb-8">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 shadow-sm">
+            <Image src="/static/fluxo.png" alt="TranscreveZAP" width={40} height={40} className="rounded-xl" />
+          </div>
+          <h1 className="font-display text-2xl font-bold text-foreground">TranscreveZAP</h1>
+          <p className="text-sm text-muted-foreground">Transcrição inteligente de áudios</p>
         </div>
-      )}
 
-      <div className="space-y-2">
-        <label htmlFor="email" className="text-sm font-medium text-foreground">
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="admin@transcrevezap.local"
-          required
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-        />
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600 border border-red-100">
+                {error}
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="text-sm font-medium text-foreground">Email</label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@transcrevezap.local"
+                required
+                className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label htmlFor="password" className="text-sm font-medium text-foreground">Senha</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm shadow-primary/25 hover:bg-primary/90 disabled:opacity-50 transition-all"
+            >
+              {loading ? 'Entrando...' : 'Entrar'}
+            </button>
+          </form>
+        </div>
+
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          Powered by{' '}
+          <a href="https://impacte.ai" target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">
+            Impacte AI
+          </a>
+        </p>
       </div>
-
-      <div className="space-y-2">
-        <label htmlFor="password" className="text-sm font-medium text-foreground">
-          Senha
-        </label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-        />
-      </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-      >
-        {loading ? 'Entrando...' : 'Entrar'}
-      </button>
-    </form>
+    </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="w-full max-w-md space-y-8 rounded-lg border border-border bg-card p-8">
-        <div className="flex flex-col items-center space-y-4">
-          <Image
-            src="/static/fluxo.png"
-            alt="TranscreveZAP"
-            width={80}
-            height={80}
-            className="rounded-lg"
-          />
-          <h1 className="text-2xl font-bold text-foreground">TranscreveZAP</h1>
-          <p className="text-sm text-muted-foreground">
-            Transcrição inteligente de áudios do WhatsApp
-          </p>
-        </div>
-
-        <Suspense fallback={<div className="space-y-4 animate-pulse" />}>
-          <LoginForm />
-        </Suspense>
-
-        <div className="pt-4 text-center text-xs text-muted-foreground">
-          <a href="https://impacte.ai" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
-            Powered by Impacte AI
-          </a>
-        </div>
-      </div>
-    </div>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Carregando...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

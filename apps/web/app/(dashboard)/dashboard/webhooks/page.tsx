@@ -24,19 +24,19 @@ export default async function WebhooksPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Webhook Hub</h1>
-          <p className="text-sm text-muted-foreground">Distribua webhooks para múltiplos destinos</p>
+          <h1 className="font-display text-2xl font-bold text-foreground">Webhook Hub</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Distribua webhooks para múltiplos destinos</p>
         </div>
       </div>
 
       {webhooks.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border py-16">
-          <Webhook className="h-12 w-12 text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card py-16">
+          <Webhook className="h-12 w-12 text-muted-foreground/40" />
           <p className="mt-4 text-lg font-medium text-muted-foreground">Nenhum webhook configurado</p>
-          <p className="mt-1 text-sm text-muted-foreground">Adicione URLs para distribuir seus webhooks</p>
+          <p className="mt-1 text-sm text-muted-foreground/70">Adicione URLs para distribuir seus webhooks</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -46,7 +46,7 @@ export default async function WebhooksPage() {
             const isHealthy = successRate >= 80;
 
             return (
-              <div key={wh.id} className="rounded-lg border border-border bg-card p-4">
+              <div key={wh.id} className="rounded-2xl border border-border bg-card p-5 transition-shadow hover:shadow-md">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <p className="font-mono text-sm text-foreground">{wh.url}</p>
@@ -54,17 +54,17 @@ export default async function WebhooksPage() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     {isHealthy ? (
-                      <CheckCircle className="h-4 w-4 text-green-400" />
+                      <CheckCircle className="h-4 w-4 text-green-500" />
                     ) : (
-                      <AlertCircle className="h-4 w-4 text-red-400" />
+                      <AlertCircle className="h-4 w-4 text-red-500" />
                     )}
-                    <span className="text-sm text-muted-foreground">{successRate}%</span>
+                    <span className="text-sm font-medium text-muted-foreground">{successRate}%</span>
                   </div>
                 </div>
                 <div className="mt-3 flex gap-4 text-xs text-muted-foreground">
                   <span>Sucesso: {wh.successCount}</span>
                   <span>Erros: {wh.errorCount}</span>
-                  {wh.lastErrorMsg && <span className="text-red-400">Último erro: {wh.lastErrorMsg}</span>}
+                  {wh.lastErrorMsg && <span className="text-red-500">Último erro: {wh.lastErrorMsg}</span>}
                 </div>
               </div>
             );

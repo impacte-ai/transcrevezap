@@ -18,59 +18,89 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const navItems = [
+const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/connections', label: 'Conexões', icon: Cable },
   { href: '/dashboard/webhooks', label: 'Webhooks', icon: Webhook },
   { href: '/dashboard/groups', label: 'Grupos', icon: Users },
   { href: '/dashboard/blocks', label: 'Bloqueios', icon: ShieldBan },
+];
+
+const generalItems = [
   { href: '/dashboard/languages', label: 'Idiomas', icon: Languages },
   { href: '/dashboard/settings', label: 'Configurações', icon: Settings },
   { href: '/dashboard/users', label: 'Usuários', icon: UserCog },
   { href: '/dashboard/logs', label: 'Logs', icon: ScrollText },
 ];
 
+function NavItem({ href, label, icon: Icon, isActive }: { href: string; label: string; icon: typeof LayoutDashboard; isActive: boolean }) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
+        isActive
+          ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/25'
+          : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
+      )}
+    >
+      <Icon className="h-[18px] w-[18px]" strokeWidth={isActive ? 2.5 : 2} />
+      {label}
+      {isActive && (
+        <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary-foreground" />
+      )}
+    </Link>
+  );
+}
+
 export function Sidebar() {
   const pathname = usePathname();
 
+  const isActive = (href: string) =>
+    pathname === href || (href !== '/dashboard' && pathname.startsWith(href));
+
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-border bg-card">
+    <aside className="flex h-screen w-[260px] flex-col border-r border-border bg-card">
       {/* Logo */}
-      <div className="flex items-center gap-3 border-b border-border px-4 py-5">
-        <Image src="/static/fluxo.png" alt="TranscreveZAP" width={36} height={36} className="rounded" />
-        <span className="text-lg font-semibold text-foreground">TranscreveZAP</span>
+      <div className="flex items-center gap-3 px-5 py-6">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+          <Image src="/static/fluxo.png" alt="TranscreveZAP" width={28} height={28} className="rounded-lg" />
+        </div>
+        <div>
+          <span className="font-display text-lg font-bold text-foreground">TranscreveZAP</span>
+        </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
-              )}
-            >
-              <Icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-2">
+        {/* MENU Section */}
+        <div>
+          <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Menu</p>
+          <div className="space-y-1">
+            {menuItems.map((item) => (
+              <NavItem key={item.href} {...item} isActive={isActive(item.href)} />
+            ))}
+          </div>
+        </div>
+
+        {/* GERAL Section */}
+        <div>
+          <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Geral</p>
+          <div className="space-y-1">
+            {generalItems.map((item) => (
+              <NavItem key={item.href} {...item} isActive={isActive(item.href)} />
+            ))}
+          </div>
+        </div>
       </nav>
 
-      {/* Logout */}
-      <div className="border-t border-border p-3">
+      {/* Bottom */}
+      <div className="border-t border-border p-3 space-y-1">
         <button
           onClick={() => signOut().then(() => window.location.href = '/login')}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors"
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-[18px] w-[18px]" />
           Sair
         </button>
       </div>

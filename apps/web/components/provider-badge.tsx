@@ -1,9 +1,9 @@
 import { cn } from '@/lib/utils';
 
 const providerColors: Record<string, string> = {
-  evolution: 'bg-green-500/10 text-green-400 border-green-500/20',
-  uazapi: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  zpro: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+  evolution: 'bg-green-50 text-green-700 border-green-200',
+  uazapi: 'bg-blue-50 text-blue-700 border-blue-200',
+  zpro: 'bg-purple-50 text-purple-700 border-purple-200',
 };
 
 export function ProviderBadge({ provider }: { provider: string }) {

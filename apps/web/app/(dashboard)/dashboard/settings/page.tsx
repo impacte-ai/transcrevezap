@@ -16,19 +16,19 @@ export default async function SettingsPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Configurações</h1>
-        <p className="text-sm text-muted-foreground">Configure o comportamento do TranscreveZAP</p>
+        <h1 className="font-display text-2xl font-bold text-foreground">Configurações</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Configure o comportamento do TranscreveZAP</p>
       </div>
       {sections.map((section) => (
-        <div key={section.title} className="rounded-lg border border-border bg-card">
-          <div className="border-b border-border px-4 py-3">
-            <h2 className="font-medium text-foreground">{section.title}</h2>
+        <div key={section.title} className="rounded-2xl border border-border bg-card overflow-hidden">
+          <div className="border-b border-border px-5 py-4">
+            <h2 className="font-display font-semibold text-foreground">{section.title}</h2>
           </div>
           <div className="divide-y divide-border">
             {section.keys.map((key) => (
-              <div key={key} className="flex items-center justify-between px-4 py-3">
+              <div key={key} className="flex items-center justify-between px-5 py-3">
                 <span className="text-sm text-muted-foreground">{key}</span>
                 <span className="font-mono text-sm text-foreground">{settings[key] || '—'}</span>
               </div>
