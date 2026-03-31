@@ -15,6 +15,7 @@ import {
   UserCog,
   ScrollText,
   LogOut,
+  UserCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -96,6 +97,12 @@ export function Sidebar() {
 
       {/* Bottom */}
       <div className="border-t border-border p-3 space-y-1">
+        <NavItem
+          href="/dashboard/profile"
+          label="Meu Perfil"
+          icon={UserCircle}
+          isActive={isActive('/dashboard/profile')}
+        />
         <button
           onClick={() => signOut().then(() => window.location.href = '/login')}
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors"
