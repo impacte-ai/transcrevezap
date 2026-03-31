@@ -12,7 +12,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 # ---- Dependencies ----
 FROM base AS deps
 WORKDIR /app
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc turbo.json ./
 COPY apps/api/package.json apps/api/
 COPY apps/web/package.json apps/web/
 COPY packages/shared/package.json packages/shared/
@@ -21,10 +21,7 @@ RUN pnpm install --frozen-lockfile
 # ---- Builder ----
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
-COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
-COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY --from=deps /app/ ./
 COPY . .
 
 # Generate Prisma client
@@ -41,10 +38,12 @@ FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Prisma client + schema
+# Prisma client + CLI + schema
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder /app/packages/shared/prisma ./prisma
+COPY --from=builder /app/packages/shared/node_modules ./packages/shared/node_modules
 
 # NestJS dist
 COPY --from=builder /app/apps/api/dist ./api
