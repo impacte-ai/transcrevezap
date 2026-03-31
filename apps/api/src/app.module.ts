@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { BullModule } from '@nestjs/bullmq';
 import { loadAppConfig } from './infrastructure/config/app.config';
 import { PrismaModule } from './infrastructure/modules/prisma.module';
 import { RedisModule } from './infrastructure/modules/redis.module';
@@ -16,6 +17,15 @@ import { InternalController } from './adapters/inbound/internal.controller';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [loadAppConfig],
+    }),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6380', 10),
+        password: process.env.REDIS_PASSWORD || undefined,
+        db: parseInt(process.env.REDIS_DB || '0', 10),
+        maxRetriesPerRequest: null,
+      },
     }),
     PrismaModule,
     RedisModule,
