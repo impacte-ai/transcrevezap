@@ -20,9 +20,24 @@ function LoginForm() {
     setLoading(true);
 
     try {
+      // Check rate limit before attempting login
+      const rateLimitRes = await fetch('/api/auth/rate-limit', { method: 'POST' });
+      if (rateLimitRes.status === 429) {
+        const data = await rateLimitRes.json();
+        setError(data.error || 'Muitas tentativas. Tente novamente em alguns minutos.');
+        setLoading(false);
+        return;
+      }
+      const rateLimitData = await rateLimitRes.json();
+
       const result = await signIn.email({ email, password });
       if (result.error) {
-        setError('Email ou senha incorretos');
+        const remaining = rateLimitData.remainingAttempts ?? 0;
+        setError(
+          remaining > 0
+            ? `Email ou senha incorretos. ${remaining} tentativa${remaining !== 1 ? 's' : ''} restante${remaining !== 1 ? 's' : ''}.`
+            : 'Email ou senha incorretos.'
+        );
       } else {
         router.push(callbackUrl);
       }

@@ -23,6 +23,7 @@
     "db:migrate:deploy": "pnpm --filter @transcrevezap/shared prisma migrate deploy",
     "db:seed": "pnpm --filter @transcrevezap/shared prisma db seed",
     "db:studio": "pnpm --filter @transcrevezap/shared prisma studio",
-    "migrate:v2": "pnpm --filter @transcrevezap/shared migrate:v2"
+    "migrate:v2": "pnpm --filter @transcrevezap/shared migrate:v2",
+    "dev:setup": "pnpm db:generate && DATABASE_URL=\"file:$(pwd)/packages/shared/prisma/dev.db\" pnpm db:migrate -- --name auto && DATABASE_URL=\"file:$(pwd)/packages/shared/prisma/dev.db\" pnpm db:seed"
   }
 }
