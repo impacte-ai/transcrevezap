@@ -18,7 +18,7 @@
     "@nestjs/platform-express": "^11.0.0",
     "@prisma/client": "^6.7.0",
     "@transcrevezap/shared": "workspace:*",
-    "axios": "^1.14.1",
+    "axios": "^1.14.0",
     "bcryptjs": "^3.0.3",
     "bullmq": "^5.30.0",
     "form-data": "^4.0.5",
