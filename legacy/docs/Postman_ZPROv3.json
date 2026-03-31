@@ -1,0 +1,3145 @@
+{
+  "info": {
+    "_postman_id": "4795fd3a-82ea-484d-b021-f7bb271c3364",
+    "name": "Postman v3",
+    "description": "Postman v3",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31031681"
+  },
+  "item": [
+    {
+      "name": "📨 Mensagens",
+      "item": [
+        {
+          "name": "SendMessageParams",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/params/?body=A%20mensagem%20desejadaa&number=5515998566622&externalKey={{SecretKey}}&bearertoken={{BearerToken}}&isClosed=false",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "params",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "body",
+                  "value": "A%20mensagem%20desejadaa",
+                  "description": "Texto da mensagem que será enviada"
+                },
+                {
+                  "key": "number",
+                  "value": "5515998566622",
+                  "description": "Número do WhatsApp do destinatário (formato: 5511999999999)"
+                },
+                {
+                  "key": "externalKey",
+                  "value": "{{SecretKey}}",
+                  "description": "Chave única do sistema para identificação (valor gerado do seu lado para controle do envio)"
+                },
+                {
+                  "key": "bearertoken",
+                  "value": "{{BearerToken}}",
+                  "description": "Token de autenticação"
+                },
+                {
+                  "key": "isClosed",
+                  "value": "false",
+                  "description": "Define se o ticket será fechado após o envio"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SendMessageAPIText",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Texto da mensagem que será enviada\n    \"body\": \"A mensagem desejada\",\n    \n    // Número do WhatsApp do destinatário (formato: 5511999999999)\n    \"number\": \"5515998566622\",\n    \n    // Chave única do sistema para identificação (valor gerado do seu lado para controle do envio)\n    \"externalKey\": \"{{SecretKey}}\",\n    \n    // Define se o ticket será fechado após o envio\n    \"isClosed\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SendMessageAPIFile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "media",
+                  "description": "Arquivo a ser enviado (imagem, documento, etc)",
+                  "type": "file",
+                  "src": "/C:/Users/Pedro/Downloads/cps_vanderlei.docx"
+                },
+                {
+                  "key": "body",
+                  "value": "Mensagem de teste 2",
+                  "description": "Texto da mensagem que acompanhará o arquivo",
+                  "type": "text"
+                },
+                {
+                  "key": "number",
+                  "value": "5515998566622",
+                  "description": "Número do WhatsApp do destinatário (formato: 5511999999999)",
+                  "type": "text"
+                },
+                {
+                  "key": "externalKey",
+                  "value": "{{SecretKey}}",
+                  "description": "Chave única do sistema para identificação (valor gerado do seu lado para controle do envio)",
+                  "type": "text"
+                },
+                {
+                  "key": "isClosed",
+                  "value": "false",
+                  "description": "Define se o ticket será fechado após o envio",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SendMessageAPIFileURL",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    // URL do arquivo que será enviado (imagem, documento, etc)\r\n    \"mediaUrl\": \"https://comunidadezdg.com.br/wp-content/uploads/2022/07/icon100.png\",\r\n    \r\n    // Texto da mensagem que acompanhará o arquivo\r\n    \"body\": \"A mensagem desejada\",\r\n    \r\n    // Número do WhatsApp do destinatário (formato: 5511999999999)\r\n    \"number\": \"5515998566622\",\r\n    \r\n    // Chave única do sistema para identificação (valor gerado do seu lado para controle do envio)\r\n    \"externalKey\": \"{{SecretKey}}\",\r\n    \r\n    // Define se o ticket será fechado após o envio\r\n    \"isClosed\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/url",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "url"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SendMessageAPIVoice",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // URL do arquivo de áudio que será enviado\n    \"audio\": \"https://comunidadezdg.com.br/wp-content/uploads/2022/12/audio.ogg\",\n    \n    // Número do WhatsApp do destinatário (formato: 5511999999999)\n    \"number\": \"5515998566622\",\n    \n    // Chave única do sistema para identificação (valor gerado do seu lado para controle do envio)\n    \"externalKey\": \"{{SecretKey}}\",\n    \n    // Define se o ticket será fechado após o envio\n    \"isClosed\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/voice",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "voice"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SendMessageAPITextBase64",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Texto da mensagem que acompanhará o arquivo\n    \"body\": \"A mensagem desejada\",\n    \n    // Número do WhatsApp do destinatário (formato: 5511999999999)\n    \"number\": \"5515998566622\",\n    \n    // Arquivo codificado em base64\n    \"base64Data\": \"iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==\",\n    \n    // Tipo MIME do arquivo (ex: image/png, application/pdf)\n    \"mimeType\": \"image/png\",\n    \n    // Nome do arquivo que será exibido\n    \"fileName\": \"exemplo_imagem\",\n    \n    // Define se o ticket será fechado após o envio\n    \"isClosed\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/base64",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "base64"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetMessageByMessageId",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/getMessageByMessageId?messageId=wamid.xxxxx",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "getMessageByMessageId"
+              ],
+              "query": [
+                {
+                  "key": "messageId",
+                  "value": "wamid.xxxxx",
+                  "description": "ID da mensagem retornado pela Meta (ex: wamid.xxxxx)"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 Mensagens em Grupo",
+      "item": [
+        {
+          "name": "SendGroupMessageAPIText",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Texto da mensagem que será enviada\n    \"body\": \"A mensagem desejada\",\n    \n    // ID do grupo do WhatsApp\n    \"number\": \"12356818915189153\",\n    \n    // Chave única do sistema para identificação (valor gerado do seu lado para controle do envio)\n    \"externalKey\": \"{{SecretKey}}\",\n    \n    // Define se o ticket será fechado após o envio\n    \"isClosed\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/group",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "group"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SendGroupMessageAPIFile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "media",
+                  "description": "Arquivo(s) a ser enviado (imagem, documento, etc)",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/Pedro/Downloads/cps_vanderlei.docx",
+                    "/C:/Users/pedro/OneDrive/Desktop/izing-passaporte/frontend/public/bg-wchats.png"
+                  ]
+                },
+                {
+                  "key": "body",
+                  "value": "Mensagem de teste 2",
+                  "description": "Texto da mensagem que acompanhará o arquivo",
+                  "type": "text"
+                },
+                {
+                  "key": "number",
+                  "value": "12356818915189153",
+                  "description": "ID do grupo do WhatsApp",
+                  "type": "text"
+                },
+                {
+                  "key": "externalKey",
+                  "value": "{{SecretKey}}",
+                  "description": "Chave única do sistema para identificação (valor gerado do seu lado para controle do envio)",
+                  "type": "text"
+                },
+                {
+                  "key": "isClosed",
+                  "value": "false",
+                  "description": "Define se o ticket será fechado após o envio",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/group",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "group"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SendMessageAPIFileURLGroup",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    // URL do arquivo que será enviado (imagem, documento, etc)\r\n    \"mediaUrl\": \"https://comunidadezdg.com.br/wp-content/uploads/2022/07/icon100.png\",\r\n    \r\n    // Texto da mensagem que acompanhará o arquivo\r\n    \"body\": \"A mensagem desejada\",\r\n    \r\n    // ID do grupo do WhatsApp\r\n    \"number\": \"12356818915189153\",\r\n    \r\n    // Chave única do sistema para identificação (valor gerado do seu lado para controle do envio)\r\n    \"externalKey\": \"{{SecretKey}}\",\r\n    \r\n    // Define se o ticket será fechado após o envio\r\n    \"isClosed\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/groupMediaUrl",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "groupMediaUrl"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📋 Templates WABA",
+      "item": [
+        {
+          "name": "SendTemplateWaba",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    // Número do WhatsApp do destinatário (formato: 5511999999999)\r\n    \"number\": \"5515998566622\",\r\n    \r\n    // Define se o ticket será fechado após o envio\r\n    \"isClosed\": false,\r\n    \r\n    // Dados do template do WhatsApp Business API\r\n    \"templateData\": {\r\n        // Produto de mensageria (sempre whatsapp)\r\n        \"messaging_product\": \"whatsapp\",\r\n        \r\n        // Número do destinatário (mesmo do campo number)\r\n        \"to\": \"5515998566622\",\r\n        \r\n        // Tipo da mensagem (sempre template)\r\n        \"type\": \"template\",\r\n        \r\n        // Configurações do template\r\n        \"template\": {\r\n            // Nome do template aprovado\r\n            \"name\": \"hello_world\",\r\n            \r\n            // Configurações de idioma\r\n            \"language\": {\r\n                // Código do idioma (ex: en_US, pt_BR)\r\n                \"code\": \"en_US\"\r\n            }\r\n        }\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/template",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "template"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SendTemplateWabaBody",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    // Número do WhatsApp do destinatário (formato: 5511999999999)\r\n    \"number\": \"5515998566622\",\r\n    \r\n    // Define se o ticket será fechado após o envio\r\n    \"isClosed\": false,\r\n    \r\n    // Dados do template do WhatsApp Business API\r\n    \"templateData\": {\r\n        // Produto de mensageria (sempre whatsapp)\r\n        \"messaging_product\": \"whatsapp\",\r\n        \r\n        // Número do destinatário (mesmo do campo number)\r\n        \"to\": \"5515998566622\",\r\n        \r\n        // Tipo da mensagem (sempre template)\r\n        \"type\": \"template\",\r\n        \r\n        // Configurações do template\r\n        \"template\": {\r\n            // Nome do template aprovado\r\n            \"name\": \"hello_world\",\r\n            \r\n            // Configurações de idioma\r\n            \"language\": {\r\n                // Código do idioma (ex: en_US, pt_BR)\r\n                \"code\": \"en_US\"\r\n            }\r\n        }\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/templateBody",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "templateBody"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SendTemplateWabaMarketing",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    // Número do WhatsApp do destinatário (formato: 5511999999999)\r\n    \"number\": \"5515998566622\",\r\n    \r\n    // Define se o ticket será fechado após o envio\r\n    \"isClosed\": false,\r\n    \r\n    // Dados do template do WhatsApp Business API\r\n    \"templateData\": {\r\n        // Produto de mensageria (sempre whatsapp)\r\n        \"messaging_product\": \"whatsapp\",\r\n        \r\n        // Número do destinatário (mesmo do campo number)\r\n        \"to\": \"5515998566622\",\r\n        \r\n        // Tipo da mensagem (sempre template)\r\n        \"type\": \"template\",\r\n        \r\n        // Configurações do template\r\n        \"template\": {\r\n            // Nome do template aprovado\r\n            \"name\": \"hello_world\",\r\n            \r\n            // Configurações de idioma\r\n            \"language\": {\r\n                // Código do idioma (ex: en_US, pt_BR)\r\n                \"code\": \"en_US\"\r\n            }\r\n        }\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/templateMarketingBody",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "templateMarketingBody"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔘 WABA Interativo",
+      "item": [
+        {
+          "name": "SendButtonWABA",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Número do WhatsApp do destinatário (formato: 5511999999999)\n    \"number\": \"5515998566622\",\n    \n    // Mensagem que acompanhará os botões\n    \"message\": \"Escolha uma opção:\",\n    \n    // Texto do primeiro botão\n    \"button1\": \"Opção 1\",\n    \n    // Texto do segundo botão\n    \"button2\": \"Opção 2\",\n    \n    // Texto do terceiro botão (opcional)\n    \"button3\": \"Opção 3\",\n    \n    // ID do ticket \n    \"ticketId\": 1262\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/sendButtonWABA",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "sendButtonWABA"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SendListWABA",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Número do WhatsApp do destinatário (formato: 5511999999999)\n    \"number\": \"5515998566622\",\n    \n    // Cabeçalho da lista\n    \"header\": \"Menu Principal\",\n    \n    // Corpo da lista\n    \"body\": \"Escolha uma opção da lista:\",\n    \n    // Rodapé da lista\n    \"footer\": \"Selecione uma opção\",\n    \n    // Texto do botão\n    \"button_text\": \"Ver opções\",\n    \n    // Seções da lista (array de objetos)\n    \"sections\": [\n        {\n            \"title\": \"Seção 1\",\n            \"rows\": [\n                {\n                    \"id\": \"1\",\n                    \"title\": \"Opção 1\",\n                    \"description\": \"Descrição da opção 1\"\n                },\n                {\n                    \"id\": \"2\",\n                    \"title\": \"Opção 2\",\n                    \"description\": \"Descrição da opção 2\"\n                }\n            ]\n        }\n    ],\n    \n    // ID do ticket\n    \"ticketId\": 1262\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/sendListWABA",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "sendListWABA"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👤 Contatos",
+      "item": [
+        {
+          "name": "CreateContact",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Nome completo do contato\n    \"name\": \"Nome\", \n    \n    // Número do WhatsApp (formato: 5511999999999)\n    \"number\": \"5515998566622\", \n    \n    // Email do contato\n    \"email\": \"contato@email.com\",\n    \n    // CPF do contato (formato: 000.000.000-00)\n    \"cpf\": \"012.345.678.91\",\n    \n    // Primeiro nome do contato\n    \"firstName\": \"Nome Principal\",\n    \n    // Sobrenome do contato\n    \"lastName\": \"Sobrenome\",\n    \n    // Nome da empresa do contato\n    \"businessName\": \"Empresa\",\n    \n    // Data de nascimento (formato: DD/MM/AAAA)\n    \"birthdayDate\": \"01/01/1990\",\n    \n    // Chave única do sistema para identificação (valor gerado do seu lado para controle do envio)\n    \"externalKey\": \"{{SecretKey}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/createContact",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "createContact"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ShowContact",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Número do WhatsApp do contato (formato: 5511999999999)\n    \"number\": \"5515998566622\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/showcontact",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "showcontact"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateContact",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Nome completo do contato\n    \"name\": \"Nome\", \n    \n    // Número do WhatsApp (formato: 5511999999999)\n    \"number\": \"5515998566622\", \n    \n    // Email do contato\n    \"email\": \"contato@email.com\",\n    \n    // CPF do contato (formato: 000.000.000-00)\n    \"cpf\": \"012.345.678.91\",\n    \n    // Primeiro nome do contato\n    \"firstName\": \"Nome Principal\",\n    \n    // Sobrenome do contato\n    \"lastName\": \"Sobrenome\",\n    \n    // Nome da empresa do contato\n    \"businessName\": \"Empresa\",\n    \n    // Data de nascimento (formato: DD/MM/AAAA)\n    \"birthdayDate\": \"01/01/1990\",\n    \n    // ID do kanban do contato\n    \"kanban\": 2,\n    \n    // Chave única do sistema para identificação (valor gerado do seu lado para controle do envio e não pode se repetir)\n    \"externalKey\": \"ID_UNICA_DO_SISTEMA_CLIENTE_PARA_EXECUTAR_UMA_ACAO_COM_WEBHOOK\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/updateContact",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "updateContact"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BlockContact",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do contato que será bloqueado/desbloqueado\n    \"contactId\": 1,\n    \n    // true para bloquear, false para desbloquear\n    \"blocked\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/blockContact",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "blockContact"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SearchContacts",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Parâmetro de busca textual (opcional) - busca em nome, número, CPF, etc\n    \"searchParam\": \"\",\n    \n    // Número da página (padrão: 1)\n    \"page\": 1,\n    \n    // Limite de resultados por página (padrão: 40)\n    \"limit\": 40,\n    \n    // ID de uma tag para filtrar (opcional)\n    \"tagId\": 1,\n    \n    // OU array de IDs de tags para filtrar por múltiplas tags (opcional)\n    // \"tagIds\": [1, 2, 3],\n    \n    // ID da wallet para filtrar (opcional)\n    // \"walletId\": 1,\n    \n    // Filtrar por contatos bloqueados (opcional: true/false)\n    // \"blocked\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/contacts/search",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "contacts",
+                "search"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateContactKanban",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do contato que terá o kanban (carteira) alterado\n    \"contactId\": 1,\n    \n    // ID do kanban (carteira) que será atribuído ao contato\n    \"kanban\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/updateContactKanban",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "updateContactKanban"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateContactWallet",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do contato que será carteirizado\n    \"contactId\": 1,\n    \n    // ID da wallet que será atribuída ao contato (pode usar walletId ou walletIds)\n    \"walletId\": 2,\n    \n    // OU array de IDs de wallets para atribuir múltiplas wallets de uma vez\n    // \"walletIds\": [1, 2, 3]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/updateContactWallet",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "updateContactWallet"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetContactExtraInfo",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/getContactExtraInfo?contactId=1",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "getContactExtraInfo"
+              ],
+              "query": [
+                {
+                  "key": "contactId",
+                  "value": "1",
+                  "description": "ID do contato"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateContactExtraInfo",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do contato que terá as informações adicionais atualizadas\n    \"contactId\": 1,\n    \n    // Array de campos personalizados (extraInfo)\n    \"extraInfo\": [\n        {\n            \"name\": \"Campo Personalizado 1\",\n            \"value\": \"Valor do campo 1\"\n        },\n        {\n            \"name\": \"Campo Personalizado 2\",\n            \"value\": \"Valor do campo 2\"\n        }\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/updateContactExtraInfo",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "updateContactExtraInfo"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎫 Tickets",
+      "item": [
+        {
+          "name": "CreateTicket",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Texto da mensagem inicial do ticket\n    \"body\": \"A mensagem desejada\",\n    \n    // Para canais WhatsApp/outros: número do contato (formato: 5511999999999)\n    \"number\": \"5535988754197\",\n    \n    // Para canal WEBMAIL: email do contato (obrigatório quando channelId for de um canal webmail)\n    // \"email\": \"contato@exemplo.com\",\n    \n    // ID do canal (opcional). Para webmail: envie o id do canal webmail (não vem do APIConfig)\n    // \"channelId\": 17841443941506797,\n    \n    // Chave única do sistema para identificação (valor gerado do seu lado para controle do envio)\n    \"externalKey\": \"{{SecretKey}}\",\n    \n    // ID do usuário que está criando o ticket\n    \"userId\": 3,\n    \n    // Status inicial do ticket (pending ou open)\n    \"status\": \"pending\",\n    \n    // ID do kanban (opcional)\n    // \"kanbanId\": 1,\n    \n    // ID do fluxo de chat (opcional)\n    // \"chatFlowId\": 16,\n    \n    // ID da fila (opcional)\n    // \"queueId\": 1,\n    \n    // ID da demanda (opcional)\n    // \"reasonId\": 1,\n    \n    // Valor do ticket (opcional)\n    // \"value\": 10.25,\n    \n    // Para webmail: nome do contato (opcional, usado na criação do contato)\n    // \"name\": \"Nome do Contato\",\n    // \"firstName\": \"Nome\",\n    // \"lastName\": \"Sobrenome\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/createTicket",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "createTicket"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateTicketWebmail",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Texto da mensagem inicial do ticket\n    \"body\": \"Mensagem inicial do ticket por email\",\n    \n    // Email do contato (obrigatório para webmail)\n    \"email\": \"contato@exemplo.com\",\n    \n    // ID do canal webmail (opcional; se não enviar, usa canal da APIConfig)\n    \"channelId\": 17841443941506797,\n    \n    \"externalKey\": \"{{SecretKey}}\",\n    \"userId\": 3,\n    \"status\": \"pending\",\n    \n    // Opcionais: nome do contato (usado ao criar contato se não existir)\n    \"name\": \"Nome do Contato\",\n    \"firstName\": \"Nome\",\n    \"lastName\": \"Sobrenome\",\n    \n    // \"kanbanId\": 1,\n    // \"chatFlowId\": 16,\n    // \"queueId\": 1,\n    // \"reasonId\": 1,\n    // \"value\": 10.25\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/createTicket",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "createTicket"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateTicketFile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "media",
+                  "description": "Arquivo a ser enviado (imagem, documento, etc)",
+                  "type": "file",
+                  "src": "/C:/Users/Pedro/Downloads/cps_vanderlei.docx"
+                },
+                {
+                  "key": "body",
+                  "value": "Mensagem de teste 2",
+                  "description": "Texto da mensagem inicial do ticket",
+                  "type": "text"
+                },
+                {
+                  "key": "number",
+                  "value": "5515998566622",
+                  "description": "Número do WhatsApp do contato (formato: 5511999999999)",
+                  "type": "text"
+                },
+                {
+                  "key": "externalKey",
+                  "value": "{{SecretKey}}",
+                  "description": "Chave única do sistema para identificação (valor gerado do seu lado para controle do envio)",
+                  "type": "text"
+                },
+                {
+                  "key": "userId",
+                  "value": "3",
+                  "description": "ID do usuário que está criando o ticket",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "description": "Status inicial do ticket (pending, open, closed)",
+                  "type": "text"
+                },
+                {
+                  "key": "kanbanId",
+                  "value": "1",
+                  "description": "ID do kanban (opcional)",
+                  "type": "text"
+                },
+                {
+                  "key": "chatFlowId",
+                  "value": "10",
+                  "description": "ID do fluxo de chat (opcional)",
+                  "type": "text"
+                },
+                {
+                  "key": "queueId",
+                  "value": "1",
+                  "description": "ID da fila (opcional)",
+                  "type": "text"
+                },
+                {
+                  "key": "channelId",
+                  "value": "",
+                  "description": "ID do canal (opcional). Para webmail: envie o id do canal webmail",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "description": "Para canal webmail: email do contato (obrigatório quando usar channelId de webmail)",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "",
+                  "description": "Para webmail: nome do contato (opcional)",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/createTicket",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "createTicket"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SetQueue",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do ticket que terá a fila alterada\n    \"ticketId\": 4,\n    \n    // ID da fila que será atribuída ao ticket\n    \"queueId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/updatequeue",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "updatequeue"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SetTag",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do ticket que terá a tag alterada\n    \"ticketId\": 4,\n    \n    // ID da tag que será atribuída ao ticket\n    \"tag\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/updatetag",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "updatetag"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SetTicketInfo",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do ticket que será atualizado\n    \"ticketId\": 1262,\n    \n    // ID do usuário que está fazendo a atualização\n    \"userId\": 1,\n    \n    // Status do ticket (pending, open, closed)\n    \"status\": \"pending\",\n    \n    // ID da fila do ticket (null para remover)\n    \"queueId\": null,\n    \n    // Status de integração com Typebot\n    \"typebotStatus\": false,\n    \n    // Status de integração com ChatGPT\n    \"chatgptStatus\": false,\n    \n    // Status de integração com Dialogflow\n    \"dialogflowStatus\": false,\n    \n    // Status de integração com Dify\n    \"difyStatus\": false,\n    \n    // Status de integração com N8N\n    \"n8nStatus\": false,\n    \n    // ID do fluxo de chat (null para remover)\n    \"chatFlowId\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/updateticketinfo",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "updateticketinfo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ShowTicketInformation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Número do WhatsApp do contato (formato: 5511999999999)\n    \"number\": \"5515998566622\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/showticket",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "showticket"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ShowTicketInformationChatBot",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Número do WhatsApp do contato (formato: 5511999999999)\n    \"number\": \"5515998566622\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/showticketchatbot",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "showticketchatbot"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ShowAllTicketInformation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Número do WhatsApp do contato (formato: 5511999999999)\n    \"number\": \"5515998566622\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/showallticket",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "showallticket"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ShowAllMessages",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do ticket que terá as mensagens listadas\n    \"ticket\": \"123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/showAllMessages",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "showAllMessages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateTicketChannel",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do ticket que terá o canal alterado\n    \"ticketId\": 1262,\n    \n    // ID do novo canal (WhatsApp)\n    \"whatsappId\": 1,\n    \n    // Tipo do canal (whatsapp, baileys, waba, etc)\n    \"channel\": \"whatsapp\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/updateTicketChannel",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "updateTicketChannel"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateNotes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Texto da nota que será adicionada ao ticket\n    \"notes\": \"Mensagem da nota\", \n    \n    // ID do ticket que receberá a nota\n    \"ticketId\": 1262, \n    \n    // ID do usuário que está criando a nota\n    \"userId\": 1,\n    \n    // Chave única do sistema para identificação (valor gerado do seu lado para controle do envio e não pode se repetir)\n    \"idFront\": \"ID_UNICA_DO_SISTEMA_CLIENTE_PARA_EXECUTAR_UMA_ACAO_COM_WEBHOOK\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/createNotes",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "createNotes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateNote",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID da nota que será atualizada\n    \"noteId\": 1,\n    \n    // Novo conteúdo da nota\n    \"notes\": \"Conteúdo atualizado da nota\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/updateNote",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "updateNote"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ListNotes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/listNotes?ticketId=1262",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "listNotes"
+              ],
+              "query": [
+                {
+                  "key": "ticketId",
+                  "value": "1262",
+                  "description": "ID do ticket"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AddTag",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do ticket que receberá a tag\n    \"ticketId\": 4,\n    \n    // ID da tag que será adicionada (pode usar tagId ou tagIds)\n    \"tagId\": 1,\n    \n    // OU array de IDs de tags para adicionar múltiplas tags de uma vez\n    // \"tagIds\": [1, 2, 3]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/addTag",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "addTag"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "RemoveTag",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do ticket que terá a tag removida\n    \"ticketId\": 4,\n    \n    // ID da tag que será removida (pode usar tagId ou tagIds)\n    \"tagId\": 1,\n    \n    // OU array de IDs de tags para remover múltiplas tags de uma vez\n    // \"tagIds\": [1, 2, 3]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/removeTag",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "removeTag"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SendPresence",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do ticket associado\n    \"ticketId\": 1262,\n    \n    // Estado de presence: \"typing\" (digitando), \"paused\" (pausado) ou \"recording\" (gravando)\n    \"state\": \"typing\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/sendPresence",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "sendPresence"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "💼 Oportunidades",
+      "item": [
+        {
+          "name": "CreateOpportunity",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Campos do contato\n  \"number\": \"5535912345678\",  // número do WhatsApp\n  \"contactName\": \"Nome do Contato\",   // nome do contato\n  \"email\": \"contato@email.com\", // email do contato\n\n  // Campos da oportunidade\n  \"name\": \"Nome da Oportunidade 2\", // nome da oportunidade\n  \"value\": 10000.00,              // valor da oportunidade\n  \"status\": \"open\",              // pode ser: \"open\", \"win\", \"lose\"\n  \"pipelineId\": 16,               // ID do pipeline\n  \"stageId\": 7,                  // ID do estágio\n  \"responsibleId\": 1,            // ID do responsável\n  \"closingForecast\": \"2024-12-31\", // data esperada de fechamento\n  \"description\": \"Descrição da oportunidade\" // descrição da oportunidade\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/createOpportunity",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "createOpportunity"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteOpportunity",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Campos da oportunidade\n  \"opportunityId\": 19 // id da oportunidade\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/deleteOpportunity",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "deleteOpportunity"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateOpportunity",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  // Campos da oportunidade\n  \"opportunityId\": 30, // id da oportunidade\n  \"name\": \"Nome da Oportunidade 2 API\", // nome da oportunidade\n  \"value\": 500.00,              // valor da oportunidade\n  \"status\": \"open\",              // pode ser: \"open\", \"win\", \"lose\"\n  \"pipelineId\": 16,               // ID do pipeline\n  \"stageId\": 7,                  // ID do estágio\n  \"responsibleId\": 1,            // ID do responsável\n  \"closingForecast\": \"2024-12-31\", // data esperada de fechamento\n  \"description\": \"Descrição da oportunidade\" // descrição da oportunidade\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/updateOpportunity",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "updateOpportunity"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 Usuários",
+      "item": [
+        {
+          "name": "CreateUser",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Email do usuário\n    \"email\": \"usuario@example.com\",\n    \n    // Senha do usuário (mínimo 8 caracteres)\n    \"password\": \"senha123\",\n    \n    // Nome completo do usuário\n    \"name\": \"Nome do Usuário\",\n    \n    // Perfil do usuário (admin, user)\n    \"profile\": \"user\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/createUser",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "createUser"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateUser",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do usuário que será atualizado\n    \"userId\": 1,\n    \n    // Nome completo do usuário (opcional)\n    \"name\": \"Nome Atualizado\",\n    \n    // Email do usuário (opcional)\n    \"email\": \"novoemail@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/updateUser",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "updateUser"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ListUsers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/listUsers?pageNumber=1",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "listUsers"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Número da página"
+                },
+                {
+                  "key": "searchParam",
+                  "value": "",
+                  "description": "Parâmetro de busca (opcional)",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetUserStatus",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/getUserStatus?userId=1",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "getUserStatus"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "1",
+                  "description": "ID do usuário"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 Listagens",
+      "item": [
+        {
+          "name": "ListChannels",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/listChannels",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "listChannels"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ListSessions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/listSessions",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "listSessions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllSessionApis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/getAllSessionApis",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "getAllSessionApis"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ListTickets",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/listTickets?pageNumber=1&status=open",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "listTickets"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Número da página"
+                },
+                {
+                  "key": "status",
+                  "value": "open",
+                  "description": "Status do ticket (open, pending, closed)"
+                },
+                {
+                  "key": "searchParam",
+                  "value": "",
+                  "description": "Parâmetro de busca (opcional)",
+                  "disabled": true
+                },
+                {
+                  "key": "queuesIds",
+                  "value": "",
+                  "description": "IDs das filas (opcional)",
+                  "disabled": true
+                },
+                {
+                  "key": "whatsappIds",
+                  "value": "",
+                  "description": "IDs dos canais (opcional)",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ListOpportunities",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/listOpportunities?page=1&limit=40",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "listOpportunities"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Número da página"
+                },
+                {
+                  "key": "limit",
+                  "value": "40",
+                  "description": "Limite de resultados por página"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Status da oportunidade (opcional)",
+                  "disabled": true
+                },
+                {
+                  "key": "pipelineId",
+                  "value": "",
+                  "description": "ID do pipeline (opcional)",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ListContacts",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/listContacts?pageNumber=1",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "listContacts"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Número da página"
+                },
+                {
+                  "key": "searchParam",
+                  "value": "",
+                  "description": "Parâmetro de busca (opcional)",
+                  "disabled": true
+                },
+                {
+                  "key": "walletId",
+                  "value": "",
+                  "description": "ID da wallet (opcional)",
+                  "disabled": true
+                },
+                {
+                  "key": "tagId",
+                  "value": "",
+                  "description": "ID da tag (opcional)",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ListTags",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/listTags?isActive=true",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "listTags"
+              ],
+              "query": [
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "description": "Filtrar por tags ativas (true/false)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ListQueues",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/listQueues",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "listQueues"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔌 Canais e Sessões",
+      "item": [
+        {
+          "name": "ShowChannelInformation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Número do WhatsApp do canal (formato: 5511999999999)\n    \"number\": \"5515998566622\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/showChannel",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "showChannel"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ShowChannelInformationById",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do canal que será consultado\n    \"id\": 43\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/showChannelById",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "showChannelById"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ListGroupsInfo",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    //lista todos os grupos\n    \"listGroups\": true, \n    \n    //lista todos os grupos e adiciona o array de participantes\n    \"listParticipants\": true \n\n    // opicional (lista dados de um grupo específico ex: idDoGrupo@g.us)\n    // \"groupId\": \"46211553263266@g.us\" \n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/listGroupInfo",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "listGroupInfo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateSession",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Nome da instância do WhatsApp\n    \"name\": \"My WhatsApp Instance\",\n    \n    // Status inicial da sessão (DISCONNECTED, CONNECTED)\n    \"status\": \"DISCONNECTED\",\n    \n    // Tipo da sessão\n    \"type\": \"baileys\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/createtSession",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "createtSession"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteSession",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID da sessão do WhatsApp que será deletada\n    \"whatsappId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/deleteSession",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "deleteSession"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "StartSession",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID da sessão do WhatsApp que será iniciada\n    \"whatsappId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/startSession",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "startSession"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ShowQrCode",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID da sessão do WhatsApp que terá o QR Code gerado\n    \"whatsappId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/qrCodeSession",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "qrCodeSession"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "RequestNewQrCode",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{BearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID da sessão do WhatsApp que terá um novo QR Code gerado\n    \"whatsappId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/v2/api/external/{{ApiID}}/requestNewQrCodeSession",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "v2",
+                "api",
+                "external",
+                "{{ApiID}}",
+                "requestNewQrCodeSession"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏢 Tenant API",
+      "item": [
+        {
+          "name": "CreateApi",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{SuperAdminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Nome da API que será criada\n    \"name\": \"API 1\",\n    \n    // ID da sessão do WhatsApp associada\n    \"sessionId\": 1,\n    \n    // URL para receber atualizações de status do serviço (opcional)\n    \"urlServiceStatus\": null,\n    \n    // URL para receber atualizações de status das mensagens (opcional)\n    \"urlMessageStatus\": null,\n    \n    // ID do usuário que está criando a API\n    \"userId\": 1,\n    \n    // Token de autenticação para a API\n    \"authToken\": \"123456\",\n    \n    // ID do tenant que terá a API\n    \"tenant\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/tenantCreateApi",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tenantCreateApi"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteApi",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{SuperAdminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID da sessão do WhatsApp associada à API\n    \"sessionId\": 43,\n    \n    // ID do usuário que está deletando a API\n    \"userId\": 1,\n    \n    // ID do tenant que possui a API\n    \"tenant\": 1,\n    \n    // ID da API que será deletada\n    \"apiId\": \"5ec32c80-4549-4256-8ed1-ed57b86396c3\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/tenantDeleteApi",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tenantDeleteApi"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "StoreTenant",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{SuperAdminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Status do tenant (active, inactive)\n    \"status\": \"active\",\n    \n    // Nome da empresa/tenant\n    \"name\": \"Empresa Exemplo\",\n    \n    // Número máximo de usuários permitidos\n    \"maxUsers\": 3,\n    \n    // Número máximo de conexões WhatsApp permitidas\n    \"maxConnections\": 3,\n    \n    // Confirmação de aceite dos termos\n    \"acceptTerms\": true,\n    \n    // Email do administrador do tenant\n    \"email\": \"user@example.com\",\n    \n    // Senha do administrador (mínimo 8 caracteres, incluindo números e caracteres especiais)\n    \"password\": \"securePassword123!\",\n    \n    // Nome completo do administrador\n    \"userName\": \"Pedro Bastos\",\n    \n    // Perfil do administrador (admin, user)\n    \"profile\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/tenantApiStoreTenant",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tenantApiStoreTenant"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateSessionTenant",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{SuperAdminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Tenant\n    \"tenant\": 1,\n\n    // Nome da instância do WhatsApp\n    \"name\": \"My WhatsApp Instance\",\n    \n    // Status inicial da sessão (DISCONNECTED, CONNECTED)\n    \"status\": \"DISCONNECTED\",\n    \n    // Tipo da sessão (whatsapp, baileys, meow, evo, uazapi, zapi)\n    \"type\": \"baileys\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/tenantApiCreateSession",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tenantApiCreateSession"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ShowTenant",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{SuperAdminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // ID do tenant que será consultado\n    \"id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/tenantApiShowTenant",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tenantApiShowTenant"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateTenant",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{SuperAdminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // Status do tenant (active, inactive)\n    \"status\": \"active\",\n    \n    // Identidade do tenant (CPF/CNPJ) - indentificador usado para reconhecer qual tenant será atualizado\n    \"identity\": \"07122989674\",\n    \n    // Número máximo de usuários permitidos\n    \"maxUsers\": 100,\n    \n    // Número máximo de conexões WhatsApp permitidas\n    \"maxConnections\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{BaseUrl}}/tenantApiUpdateTenant",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tenantApiUpdateTenant"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ListTenants",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{SuperAdminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{BaseUrl}}/tenantApiListTenants",
+              "protocol": "https",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tenantApiListTenants"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{vault:authorization-secret}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BaseUrl",
+      "value": "backend_url_here"
+    },
+    {
+      "key": "BearerToken",
+      "value": "your_token_here"
+    },
+    {
+      "key": "SecretKey",
+      "value": "unique_id"
+    },
+    {
+      "key": "SuperAdminToken",
+      "value": "your_superadmin_token_here"
+    },
+    {
+      "key": "ApiID",
+      "value": "your_api_id_here"
+    }
+  ]
+}

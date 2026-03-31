@@ -26,7 +26,7 @@ coverage/
 # Fluxo de IA local (nunca commitar)
 CLAUDE.md
 .claude/
-docs/
+/docs/
 
 # IDE
 .vscode/
