@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -10,7 +10,7 @@ interface SettingsFormProps {
   initialSettings: Record<string, string>;
 }
 
-type FieldKind = 'select' | 'text' | 'number' | 'toggle' | 'textarea' | 'apikey';
+type FieldKind = 'select' | 'text' | 'number' | 'toggle' | 'textarea' | 'apikey' | 'model-select';
 
 interface Option {
   label: string;
@@ -24,6 +24,8 @@ interface FieldDef {
   options?: Option[];
   placeholder?: string;
   description?: string;
+  modelType?: 'stt' | 'llm';
+  providerKey?: string;
 }
 
 interface SectionDef {
@@ -95,11 +97,11 @@ const SECTIONS: SectionDef[] = [
     title: 'Transcrição (STT)',
     fields: [
       { key: 'transcription.sttProvider', label: 'Provedor STT', kind: 'select', options: STT_PROVIDERS },
-      { key: 'transcription.sttModel', label: 'Modelo STT', kind: 'text', placeholder: 'ex: whisper-large-v3-turbo' },
+      { key: 'transcription.sttModel', label: 'Modelo STT', kind: 'model-select', placeholder: 'ex: whisper-large-v3-turbo', modelType: 'stt', providerKey: 'transcription.sttProvider' },
       { key: 'transcription.language', label: 'Idioma Padrão', kind: 'select', options: LANGUAGES },
       { key: 'transcription.useTimestamps', label: 'Timestamps', kind: 'toggle', description: 'Incluir marcas de tempo na transcrição' },
       { key: 'transcription.sttFallbackProvider', label: 'Provedor STT Fallback', kind: 'select', options: STT_PROVIDERS_WITH_NONE },
-      { key: 'transcription.sttFallbackModel', label: 'Modelo STT Fallback', kind: 'text', placeholder: 'ex: whisper-1' },
+      { key: 'transcription.sttFallbackModel', label: 'Modelo STT Fallback', kind: 'model-select', placeholder: 'ex: whisper-1', modelType: 'stt', providerKey: 'transcription.sttFallbackProvider' },
     ],
   },
   {
@@ -107,7 +109,7 @@ const SECTIONS: SectionDef[] = [
     title: 'Sumarização (LLM)',
     fields: [
       { key: 'transcription.llmProvider', label: 'Provedor LLM', kind: 'select', options: LLM_PROVIDERS },
-      { key: 'transcription.llmModel', label: 'Modelo LLM', kind: 'text', placeholder: 'ex: llama-3.1-70b-versatile' },
+      { key: 'transcription.llmModel', label: 'Modelo LLM', kind: 'model-select', placeholder: 'ex: llama-3.1-70b-versatile', modelType: 'llm', providerKey: 'transcription.llmProvider' },
       { key: 'transcription.outputMode', label: 'Modo de Saída', kind: 'select', options: OUTPUT_MODES },
       { key: 'transcription.characterLimit', label: 'Limite de Caracteres', kind: 'number', placeholder: '500', description: 'Usado no modo Inteligente' },
     ],
@@ -188,6 +190,64 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
   const [sectionStatus, setSectionStatus] = useState<Record<string, 'idle' | 'saving' | 'saved' | 'error'>>({});
   const [apiKeyEditing, setApiKeyEditing] = useState<Record<string, boolean>>({});
   const [apiKeyValues, setApiKeyValues] = useState<Record<string, string>>({});
+
+  // Model dropdown state: key = "provider:type" e.g. "groq:stt"
+  const [providerModels, setProviderModels] = useState<Record<string, Array<{ modelId: string; name: string }>>>({});
+  const [modelsLoading, setModelsLoading] = useState<Record<string, boolean>>({});
+  const [refreshingProvider, setRefreshingProvider] = useState<Record<string, boolean>>({});
+
+  const fetchModelsForProvider = useCallback(async (provider: string, type: 'stt' | 'llm') => {
+    if (!provider) return;
+    const cacheKey = `${provider}:${type}`;
+    setModelsLoading((prev) => ({ ...prev, [cacheKey]: true }));
+    try {
+      const res = await fetch(`/api/models/${provider}/${type}`);
+      if (res.ok) {
+        const data = await res.json();
+        setProviderModels((prev) => ({ ...prev, [cacheKey]: Array.isArray(data) ? data : [] }));
+      }
+    } catch {
+      // silently fail, text input fallback will show
+    } finally {
+      setModelsLoading((prev) => ({ ...prev, [cacheKey]: false }));
+    }
+  }, []);
+
+  const refreshProviderModels = useCallback(async (provider: string) => {
+    if (!provider) return;
+    const apiKey = settings[`apikeys.${provider}`] ?? '';
+    if (!apiKey) return;
+    setRefreshingProvider((prev) => ({ ...prev, [provider]: true }));
+    try {
+      const res = await fetch(`/api/models/${provider}/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey }),
+      });
+      if (res.ok) {
+        // Reload both stt and llm
+        await Promise.all([
+          fetchModelsForProvider(provider, 'stt'),
+          fetchModelsForProvider(provider, 'llm'),
+        ]);
+      }
+    } catch {
+      // silent fail
+    } finally {
+      setRefreshingProvider((prev) => ({ ...prev, [provider]: false }));
+    }
+  }, [settings, fetchModelsForProvider]);
+
+  // Load models when provider values change
+  useEffect(() => {
+    const sttProvider = settings['transcription.sttProvider'];
+    const llmProvider = settings['transcription.llmProvider'];
+    const fallbackProvider = settings['transcription.sttFallbackProvider'];
+    if (sttProvider) fetchModelsForProvider(sttProvider, 'stt');
+    if (llmProvider) fetchModelsForProvider(llmProvider, 'llm');
+    if (fallbackProvider) fetchModelsForProvider(fallbackProvider, 'stt');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings['transcription.sttProvider'], settings['transcription.llmProvider'], settings['transcription.sttFallbackProvider']]);
 
   const updateLocal = useCallback((key: string, value: string) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
@@ -321,6 +381,53 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
             </span>
           </div>
         );
+
+      case 'model-select': {
+        const provider = field.providerKey ? (settings[field.providerKey] ?? '') : '';
+        const cacheKey = `${provider}:${field.modelType}`;
+        const models = providerModels[cacheKey] ?? [];
+        const isLoading = modelsLoading[cacheKey] ?? false;
+        const isRefreshing = refreshingProvider[provider] ?? false;
+        const hasModels = models.length > 0;
+
+        return (
+          <div className="flex gap-2">
+            {hasModels ? (
+              <select
+                value={value}
+                onChange={(e) => updateLocal(field.key, e.target.value)}
+                className="flex-1 rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              >
+                {!value && <option value="">Selecione...</option>}
+                {models.map((m) => (
+                  <option key={m.modelId} value={m.modelId}>
+                    {m.name || m.modelId}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                value={value}
+                onChange={(e) => updateLocal(field.key, e.target.value)}
+                placeholder={isLoading ? 'Carregando modelos...' : field.placeholder}
+                className="flex-1 rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+            )}
+            {provider && (
+              <button
+                type="button"
+                onClick={() => refreshProviderModels(provider)}
+                disabled={isRefreshing || !settings[`apikeys.${provider}`]}
+                title={!settings[`apikeys.${provider}`] ? 'Configure a API Key primeiro' : 'Atualizar modelos do provider'}
+                className="shrink-0 rounded-xl border border-border px-3 py-2 text-sm text-muted-foreground hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isRefreshing ? 'Atualizando...' : 'Atualizar Modelos'}
+              </button>
+            )}
+          </div>
+        );
+      }
 
       default:
         return null;
