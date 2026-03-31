@@ -1,32 +1,17 @@
+# Environment
 .env
-*.pyc
-/docker-composer.yaml
-GPT.postman_collection.json
-.venv/
-deploy_producao.sh
-/Dockerfile
-manager_atualizar.py
-roadmap.md
-
-# Fluxo de IA local (nunca commitar)
-CLAUDE.md
-.claude/
-docs/
+.env.local
+.env.production
 
 # Dependencies
 node_modules/
+.venv/
 
 # Build output
 dist/
 *.tsbuildinfo
-
-# Turbo cache
 .turbo/
-
-# Next.js
 .next/
-
-# Coverage
 coverage/
 
 # Database files (generated)
@@ -34,3 +19,19 @@ coverage/
 *.db-journal
 *.db-wal
 *.db-shm
+
+# Python legacy
+*.pyc
+
+# Fluxo de IA local (nunca commitar)
+CLAUDE.md
+.claude/
+docs/
+
+# IDE
+.vscode/
+
+# Misc
+GPT.postman_collection.json
+manager_atualizar.py
+roadmap.md

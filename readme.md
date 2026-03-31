@@ -1,4 +1,4 @@
-![TranscreveZAP](./static/fluxo.png)
+![TranscreveZAP](static/fluxo.png)
 
 # TranscreveZAP 3.0 — Transcrição Inteligente de Áudios do WhatsApp
 
@@ -410,4 +410,4 @@ MIT — veja [LICENSE](LICENSE).
 
 **Desenvolvido por [Impacte AI](https://impacte.ai)** | contato@impacte.ai
 
-![PIX](./pix.jpeg)
+![PIX](legacy/pix.jpeg)

@@ -15,8 +15,13 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
       - API_PORT=8005
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      - NESTJS_INTERNAL_URL=http://localhost:8005
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@transcrevezap.local}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      - INTERNAL_API_SECRET=${INTERNAL_API_SECRET:-}
       - API_DOMAIN=${API_DOMAIN:-}
       - MANAGER_DOMAIN=${MANAGER_DOMAIN:-}
     volumes:
