@@ -1,523 +1,413 @@
-![ImpacteAI](./fluxo.png)
-# TranscreveZAP 2.3- Plataforma de Gestão e Automação de Áudios do WhatsApp
+![TranscreveZAP](./static/fluxo.png)
 
-### Sistema Inteligente de Transcrição, Resumo e Tradução Automática de Áudios para WhatsApp
+# TranscreveZAP 3.0 — Transcrição Inteligente de Áudios do WhatsApp
 
-*Desenvolvido com Python, FastAPI e Streamlit*
+Plataforma open source para transcrição automática, sumarização e tradução de áudios do WhatsApp com inteligência artificial. Multi-provedor de WhatsApp e IA, com painel administrativo moderno e deploy simplificado via Docker.
+
+**Desenvolvido com Next.js, NestJS, Prisma e TypeScript**
+
+[![Docker Hub](https://img.shields.io/badge/Docker%20Hub-impacteai%2Ftranscrevezap-blue)](https://hub.docker.com/r/impacteai/transcrevezap)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-Uma solução completa para automatizar e gerenciar mensagens de áudio no WhatsApp, oferecendo:
-- Transcrição automática multilíngue
-- Resumos inteligentes de áudios
-- Detecção e tradução automática entre idiomas
-- Seleção de plataforma LLM (GROQ ou OpenAI)
-- Interface administrativa completa
-- Sistema de rodízio de chaves API
-- Gestão avançada de grupos e usuários
-- Personalização de formatação e saída
-- Sistema de Redirecionamento de Webhooks
+**Site:** [impacte.ai](https://impacte.ai) | **Email:** contato@impacte.ai | **WhatsApp:** [Grupo da Comunidade](https://chat.whatsapp.com/L9jB1SlcmQFIVxzN71Y6KG)
 
-Contato de email: contato@impacte.ai
-([ACESSE NOSSO SITE](https://impacte.ai/))
-
-Nosso Grupo do Whatsapp: ([Entre no GRUPO AQUI](https://chat.whatsapp.com/L9jB1SlcmQFIVxzN71Y6KG)) 
 ---
 
-## 📋 **Pré-requisitos**
-Antes de começar, certifique-se de ter os seguintes requisitos:
-- Python 3.10+ instalado ([Download](https://www.python.org/downloads/))
+## O que o TranscreveZAP faz
+
+1. Recebe webhooks de áudios do WhatsApp (via Evolution API, UAZAPI ou ZPRO)
+2. Transcreve o áudio usando IA (Groq, OpenAI, Google Gemini, Deepgram ou OpenRouter)
+3. Resume o texto com LLM (opcional, configurável)
+4. Traduz automaticamente entre idiomas (opcional)
+5. Responde no WhatsApp com a transcrição/resumo como reply do áudio original
+6. Distribui o webhook para outros destinos (Webhook Hub)
+
+---
+
+## Funcionalidades
+
+- **Multi-provedor WhatsApp**: Evolution API, UAZAPI, ZPRO — cada um com endpoint dedicado
+- **Multi-provedor IA (STT)**: Groq (Whisper), OpenAI (GPT-4o Transcribe), Google Gemini (multimodal), Deepgram (Nova-3), OpenRouter
+- **Multi-provedor LLM**: Groq, OpenAI, Google Gemini, OpenRouter — para sumarização
+- **Dropdown dinâmico de modelos**: Busca modelos direto da API do provider com cache no banco
+- **Rotação de chaves API**: Round-robin com penalização automática de chaves com falha (5 min)
+- **Fallback chain**: Se o provider principal falhar, tenta o fallback configurado
+- **16 idiomas**: Transcrição, resumo e tradução em pt, en, es, fr, de, it, ja, ko, zh, ru, ar, hi, nl, pl, tr, ro
+- **Detecção automática de idioma**: Identifica o idioma do áudio automaticamente
+- **Tradução automática**: Traduz para o idioma do sistema quando o contato fala em outro idioma
+- **Idioma por contato**: Configure idioma específico para cada contato
+- **Timestamps**: Marcadores de tempo [MM:SS] opcionais na transcrição
+- **4 modos de saída**: Ambos, apenas resumo, apenas transcrição, inteligente (resume se longo)
+- **Webhook Hub**: Distribui webhooks para múltiplos destinos com retry automático (BullMQ)
+- **RBAC customizável**: Crie roles e permissões granulares para cada usuário
+- **Dark/Light mode**: Toggle de tema no painel
+- **Painel moderno**: Next.js 15 com Tailwind CSS, responsivo, light/dark mode
+- **SQLite ou PostgreSQL**: Banco relacional via Prisma — SQLite por padrão (zero config)
+- **Redis**: Cache, filas de webhook, rate limiting, rotação de chaves
+- **Docker Hub**: Imagens prontas para deploy
+
+---
+
+## Instalacao Rapida (Docker Compose)
+
+### Pré-requisitos
+
 - Docker e Docker Compose instalados ([Instruções](https://docs.docker.com/get-docker/))
-- Uma conta Evolution API com chave válida
-- Chaves GROQ (começa com `gsk_`) e/ou chaves OpenAI (começa com `sk-`) configuradas ([Crie sua conta GROQ](https://console.groq.com/login))
-* Em caso de uso com Proxy Reverso Aponte um Subdomínio para a API e outro para o MANAGER da aplicação
----
+- Uma conta em pelo menos um provedor WhatsApp (Evolution API, UAZAPI ou ZPRO)
+- Pelo menos uma API key de IA (Groq recomendado — gratuito)
 
-## 🚀 **Novidade: Escolha do Provedor LLM**
-Agora você pode escolher entre dois provedores para transcrições e resumos:
-1. **GROQ** (open-source): Configuração padrão.
-2. **OpenAI** (API paga): Integração com modelos GPT.
-
-### Configuração:
-- Acesse: **Configurações > Provedor LLM** na interface administrativa.
-- Escolha entre `groq` e `openai`.
-- Adicione as chaves correspondentes para cada provedor.
-
----
-## 🚀 **Instalação e Configuração**
-
-### 🐳 Docker Compose
-1. Configure o arquivo docker-compose.yaml:
+### 1. Crie o docker-compose.yaml
 
 ```yaml
-version: "3.7"
-
 services:
-  # Serviço principal do TranscreveZAP
-  tcaudio:
+  transcrevezap:
     image: impacteai/transcrevezap:latest
-    build:
-      context: .
+    container_name: transcrevezap
+    restart: unless-stopped
     ports:
-      - "8005:8005"  # API FastAPI - Use esta porta para configurar o webhook
-      - "8501:8501"  # Interface Web Streamlit - Acesse o painel por esta porta
+      - "8005:8005"  # API (webhooks)
+      - "3000:3000"  # Painel administrativo
     environment:
-      # Configurações do Servidor
-      - UVICORN_PORT=8005
-      - UVICORN_HOST=0.0.0.0
-      - UVICORN_RELOAD=true
-      - UVICORN_WORKERS=1
-      - API_DOMAIN=localhost  # Para uso local mantenha localhost
-      
-      # Modo Debug e Logs
-      - DEBUG_MODE=false
-      - LOG_LEVEL=INFO
-      
-      # Credenciais do Painel Admin (ALTERE ESTAS CREDENCIAIS!)
-      - MANAGER_USER=admin
-      - MANAGER_PASSWORD=sua_senha_aqui
-      
-      # Configurações do Redis
-      - REDIS_HOST=redis-transcrevezap  # Nome do serviço Redis
-      - REDIS_PORT=6380                 # Porta do Redis
-      - REDIS_DB=0                      # Banco de dados Redis
-      
-      # Autenticação Redis (opcional - descomente se necessário)
-      # - REDIS_USERNAME=seu_usuario    # Nome do usuário Redis
-      # - REDIS_PASSWORD=sua_senha      # Senha do Redis
-    depends_on:
-      - redis-transcrevezap
-    command: ./start.sh
-
-  # Serviço Redis para armazenamento de dados
-  redis-transcrevezap:
-    image: redis:6
-    # Escolha UMA das configurações do Redis abaixo:
-    
-    # 1. Configuração simples SEM autenticação:
-    command: redis-server --port 6380 --appendonly yes
-    
-    # 2. Configuração COM autenticação (descomente e ajuste se necessário):
-    # command: >
-    #   redis-server 
-    #   --port 6380 
-    #   --appendonly yes 
-    #   --user admin on '>sua_senha' '~*' '+@all'
-    volumes:
-      - redis_transcrevezap_data:/data  # Persistência dos dados
-
-# Volumes para persistência
-volumes:
-  redis_transcrevezap_data:
-    driver: local
-
-# Instruções de Uso:
-# 1. Salve este arquivo como docker-compose.yml
-# 2. Execute com: docker compose up -d
-# 3. Acesse o painel em: http://localhost:8501
-# 4. Configure o webhook da Evolution API para: http://localhost:8005/transcreve-audios
-
-```
-
-2. Inicie os serviços:
-```bash
-docker-compose up -d
-```
-
-## 📖 Configuração da Interface
-
-Acesse a interface de gerenciamento em http://seu-ip:8501.
-Faça login com as credenciais definidas em MANAGER_USER e MANAGER_PASSWORD.
-Na seção "Configurações", defina:
-
-1. GROQ_API_KEY: Sua chave da API GROQ
-2. BUSINESS_MESSAGE: Mensagem de rodapé após transcrição
-3. PROCESS_GROUP_MESSAGES: Habilitar processamento de mensagens em grupos
-4. PROCESS_SELF_MESSAGES: Habilitar processamento de mensagens próprias
-
-## 🔧 Uso
-Endpoint para Webhook da Evolution API
-Configure o webhook da Evolution API para apontar para:
-```bash
-http://seu-ip:8005/transcreve-audios
-```
-## 🔍 Troubleshooting
-Se encontrar problemas:
-
-1. Verifique os logs dos containers:
-```bash
-docker-compose logs
-```
-2. Certifique-se de que o Redis está rodando e acessível.
-3. Verifique se todas as configurações foram salvas corretamente na interface.
-
-
-## 📖 **Configuração Detalhada das Variáveis**
-
-### Variáveis Essenciais
-
-| Variável               | Descrição                                                | Obrigatória | Exemplo                                                    |
-|-----------------------|----------------------------------------------------------|-------------|----------------------------------------------------------|
-| `GROQ_API_KEY`        | Chave da API GROQ (deve começar com 'gsk_')             | Sim         | `gsk_abc123...`                                           |
-
-### Variáveis de Personalização
-
-| Variável               | Descrição                                                | Padrão      | Exemplo                                                    |
-|-----------------------|----------------------------------------------------------|-------------|----------------------------------------------------------|
-| `BUSINESS_MESSAGE`    | Mensagem de rodapé após transcrição                      | Vazio       | `substitua_sua_mensagem_de_servico_aqui` |
-| `PROCESS_GROUP_MESSAGES` | Habilita processamento de mensagens em grupos          | `false`     | `true` ou `false`
-| `PROCESS_SELF_MESSAGES` | Habilita processamento de mensagens enviadas por você    | `true`     | `true` ou `false`                                                      |
-
-### Variáveis de Debug e Log
-
-| Variável               | Descrição                                                | Padrão      | Valores Possíveis                                          |
-|-----------------------|----------------------------------------------------------|-------------|----------------------------------------------------------|
-| `DEBUG_MODE`          | Ativa logs detalhados para debugging                     | `false`     | `true` ou `false`                                          |
-| `LOG_LEVEL`           | Define o nível de detalhamento dos logs                  | `INFO`      | `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`            |
-
----
-
-## 🚀 **Métodos de Execução**
-Usar sempre ao final do endereço definido o endpoint `/transcreve-audios` para que a API funcione.
-### Execução Local
-```bash
-uvicorn main:app --host 0.0.0.0 --port 8005
-```
-### Endpoint para inserir no webhook da Evolution API para consumir o serviço
-```bash
-http://127.0.0.1:8005/transcreve-audios
-```
-1. Aponte um subomínio com o IP do seu servidor para a API da TranscreveZAP
-2. Aponte um subomínio com o IP do seu servidor para o MANAGER da TranscreveZAP
-
-### 🌟 Docker Swarm com Traefik
-```yaml
-version: "3.7"
-
-services:
-  tcaudio:
-    image: impacteai/transcrevezap:dev
-    networks:
-      - sua_rede_externa # Substitua pelo nome da sua rede externa
-    ports:
-      - 8005:8005  # Porta para FastAPI
-      - 8501:8501  # Porta para Streamlit
-    environment:
-      - UVICORN_PORT=8005
-      - UVICORN_HOST=0.0.0.0
-      - UVICORN_RELOAD=true
-      - UVICORN_WORKERS=1
-      - API_DOMAIN=seu.dominio.com   #coloque seu subdominio da API apontado aqui
-      - DEBUG_MODE=false
-      - LOG_LEVEL=INFO
-      - MANAGER_USER=seu_usuario_admin   # Defina Usuário do Manager
-      - MANAGER_PASSWORD=sua_senha_segura   # Defina Senha do Manager
+      - TZ=America/Sao_Paulo
+      - DATABASE_URL=file:/app/data/transcrevezap.db
       - REDIS_HOST=redis-transcrevezap
-      - REDIS_PORT=6380 # Porta personalizada para o Redis do TranscreveZAP
-      - REDIS_DB=0  # Opcional: pode ser removida para usar o valor padrão
-      # Autenticação Redis (opcional - descomente se necessário, se estiver usando autenticação)
-      # - REDIS_USERNAME=${REDIS_USERNAME:-}  # Nome do usuário definido no comando do Redis
-      # - REDIS_PASSWORD=${REDIS_PASSWORD:-}  # Senha definida no comando do Redis (sem o '>')
+      - REDIS_PORT=6380
+      - BETTER_AUTH_SECRET=GERE_UMA_CHAVE_ALEATORIA_AQUI
+      - ADMIN_EMAIL=admin@seu.email.com
+      - ADMIN_PASSWORD=sua_senha_segura
+    volumes:
+      - transcrevezap_data:/app/data
     depends_on:
-      - redis-transcrevezap
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      labels:
-        - traefik.enable=true
-        - traefik.http.routers.tcaudio.rule=Host(`seu.dominio.com`)   #coloque seu subdominio da API apontado aqui
-        - traefik.http.routers.tcaudio.entrypoints=websecure
-        - traefik.http.routers.tcaudio.tls.certresolver=letsencryptresolver
-        - traefik.http.services.tcaudio.loadbalancer.server.port=8005
-        - traefik.http.services.tcaudio.loadbalancer.passHostHeader=true
-        - traefik.http.routers.tcaudio.service=tcaudio
-        - traefik.http.middlewares.traefik-compress.compress=true
-        - traefik.http.routers.tcaudio.middlewares=traefik-compress
-        # Configuração do Streamlit
-        - traefik.http.routers.tcaudio-manager.rule=Host(`manager.seu.dominio.com`)   #coloque seu subdominio do Manager apontado aqui
-        - traefik.http.routers.tcaudio-manager.entrypoints=websecure
-        - traefik.http.routers.tcaudio-manager.tls.certresolver=letsencryptresolver
-        - traefik.http.services.tcaudio-manager.loadbalancer.server.port=8501
-        - traefik.http.routers.tcaudio-manager.service=tcaudio-manager
-    command: ./start.sh
+      redis-transcrevezap:
+        condition: service_healthy
 
   redis-transcrevezap:
-    image: redis:6
-    # 1. Configuração SEM autenticação (padrão):
-    command: redis-server --port 6380 --appendonly yes   
-    # 2. Configuração COM autenticação (descomente e ajuste se necessário):
-    # command: >
-    #   redis-server 
-    #   --port 6380 
-    #   --appendonly yes 
-    #   --user seuusuario on '>minhasenha' '~*' '+@all'
-    #   # Explicação dos parâmetros:
-    #   # --user seuusuario: nome do usuário
-    #   # on: indica início da configuração do usuário
-    #   # '>minhasenha': senha do usuário (mantenha o '>')
-    #   # '~*': permite acesso a todas as chaves
-    #   # '+@all': concede todas as permissões
+    image: redis:7-alpine
+    container_name: redis-transcrevezap
+    restart: unless-stopped
+    command: redis-server --port 6380 --appendonly yes
     volumes:
       - redis_transcrevezap_data:/data
-    networks:
-      - sua_rede_externa # Substitua pelo nome da sua rede externa
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-
-networks:
-  sua_rede_externa:  # Substitua pelo nome da sua rede externa
-    external: true
-    name: sua_rede_externa  # Substitua pelo nome da sua rede externa
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6380", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
+  transcrevezap_data:
   redis_transcrevezap_data:
-    driver: local
 ```
 
-### Endpoint para inserir no webhook da Evolution API para consumir o serviço
+### 2. Inicie
+
 ```bash
-https://transcricaoaudio.seudominio.com.br/transcreve-audios
-
-```
-## 🔧 **Configuração do Traefik**
-
-Para usar com Traefik, certifique-se de:
-1. Ter o Traefik configurado em seu ambiente Docker Swarm
-2. Configurar 2 DNS do seu domínio para apontar para a API e para o MANAGER
-3. Ajustar as labels do Traefik conforme seu ambiente
-4. Verificar se a rede externa existe no Docker Swarm
-5. Utilize a stack de exemplo contida no projeto para guiar a instalação
-
-## 📝 **Notas Importantes**
-- A GROQ_API_KEY deve começar com 'gsk_'
-- O BUSINESS_MESSAGE suporta formatação do WhatsApp (*negrito*, _itálico_)
-- Para quebras de linha no BUSINESS_MESSAGE, use \n
-- Em produção, recomenda-se DEBUG_MODE=false
-- Configure LOG_LEVEL=DEBUG apenas para troubleshooting
-
-## 🚀 Novo Recurso v2.3.1: Hub de Redirecionamento
-
-O TranscreveZAP agora oferece um sistema robusto para redirecionamento de mensagens, permitindo que você encaminhe os webhooks da Evolution API para múltiplos destinos simultaneamente.
-
-### Principais Recursos
-- Interface dedicada para gerenciamento de webhooks
-- Redirecionamento sem alteração do payload original
-- Monitoramento de saúde dos webhooks em tempo real
-- Sistema de retry automático para reenvio de mensagens falhas
-- Headers de rastreamento para identificação de origem (`X-TranscreveZAP-Forward`)
-- Suporte a descrições personalizadas para cada webhook
-- Limpeza automática de dados ao remover webhooks
-
-### Compatibilidade
-- Mantém o payload da Evolution API intacto
-- Suporta múltiplos endpoints simultaneamente
-- Compatível com qualquer sistema que aceite webhooks via POST
-- Preserva todos os dados originais da mensagem
-
-## ✨ Novos Recursos na v2.3
-
-### 🌍 Suporte Multilíngue
-- Transcrição e resumo com suporte para 16 idiomas principais
-- Mudança instantânea de idioma
-- Interface intuitiva para seleção de idioma
-- Mantém consistência entre transcrição e resumo
-- Configuração manual de idioma por contato
-- Detecção automática de idioma
-- Tradução automática integrada
-
-### 🔄 Sistema de Cache para Idiomas
-Implementação de cache inteligente para otimizar a detecção e processamento de idiomas.
-
-### 🔄 Sistema Inteligente de Rodízio de Chaves
-- Suporte a múltiplas chaves GROQ
-- Balanceamento automático de carga
-- Maior redundância e disponibilidade
-- Gestão simplificada de chaves via interface
-
-### ⏱️ Timestamps em Transcrições
-Nova funcionalidade de timestamps que adiciona marcadores de tempo precisos em cada trecho da transcrição.
-
-## 📋 Detalhamento das Funcionalidades
-
-### 🌍 Sistema de Idiomas
-O TranscreveZAP suporta transcrição e resumo em múltiplos idiomas. Na seção "Configurações", você pode:
-
-1. Selecionar o idioma principal para transcrição e resumo
-2. O sistema manterá Português como padrão se nenhum outro for selecionado
-3. A mudança de idioma é aplicada instantaneamente após salvar
-
-Idiomas suportados:
-- 🇩🇪 Alemão
-- 🇸🇦 Árabe
-- 🇨🇳 Chinês
-- 🇰🇷 Coreano
-- 🇪🇸 Espanhol
-- 🇫🇷 Francês
-- 🇮🇳 Hindi
-- 🇳🇱 Holandês
-- 🇬🇧 Inglês
-- 🇮🇹 Italiano
-- 🇯🇵 Japonês
-- 🇵🇱 Polonês
-- 🇧🇷 Português (padrão)
-- 🇷🇴 Romeno
-- 🇷🇺 Russo
-- 🇹🇷 Turco
-
-### 🌐 Gestão de Idiomas por Contato
-
-#### Configuração Manual
-```markdown
-1. Acesse o Manager > Configurações > Idiomas e Transcrição
-2. Expanda "Adicionar Novo Contato"
-3. Digite o número do contato (formato: 5521999999999)
-4. Selecione o idioma desejado
-5. Clique em "Adicionar Contato"
+docker compose up -d
 ```
 
-### 🔄 Detecção Automática de Idioma
-Nova funcionalidade que detecta automaticamente o idioma do contato:
-- Ativação via Manager > Configurações > Idiomas e Transcrição
-- Analisa o primeiro áudio de cada contato
-- Cache inteligente de 24 horas
-- Funciona apenas em conversas privadas
-- Mantém configuração global para grupos
+### 3. Acesse o painel
 
-### ⚡ Tradução Automática
-Sistema inteligente de tradução que:
-- Traduz automaticamente áudios recebidos para seu idioma principal
-- Mantém o contexto e estilo original da mensagem
-- Preserva formatações especiais (emojis, negrito, itálico)
-- Otimizado para comunicação natural
+Abra **http://seu-ip:3000** no navegador.
 
-### ⏱️ Sistema de Timestamps
-Nova funcionalidade que adiciona marcadores de tempo:
-- Formato [MM:SS] no início de cada trecho
-- Ativação via Manager > Configurações > Idiomas e Transcrição
-- Precisão de segundos
-- Ideal para referência e navegação em áudios longos
+Login com as credenciais definidas em `ADMIN_EMAIL` e `ADMIN_PASSWORD`.
 
-#### Exemplo de Saída com Timestamps:
-```
-[00:00] Bom dia pessoal
-[00:02] Hoje vamos falar sobre
-[00:05] O novo sistema de timestamps
-```
-## 🔧 Configuração e Uso
+### 4. Configure no painel
 
-### Configuração de Idiomas
-1. **Configuração Global**
-   - Defina o idioma padrão do sistema
-   - Acesse: Manager > Configurações > Configurações Gerais
-   - Selecione o idioma principal em "Idioma para Transcrição e Resumo"
+1. **Configuracoes > API Keys**: Adicione a chave do seu provider de IA (Groq, OpenAI, etc.)
+2. **Conexoes**: Crie uma conexao com seu provider WhatsApp (Evolution API, UAZAPI ou ZPRO)
+3. **Configure o webhook** no seu provider WhatsApp apontando para:
+   - Evolution API: `http://seu-ip:8005/webhook/evolution/SEU_CONNECTION_ID`
+   - UAZAPI: `http://seu-ip:8005/webhook/uazapi/SEU_CONNECTION_ID`
+   - ZPRO: `http://seu-ip:8005/webhook/zpro/SEU_CONNECTION_ID`
 
-2. **Configuração por Contato**
-   - Acesse: Manager > Configurações > Idiomas e Transcrição
-   - Use "Adicionar Novo Contato" ou gerencie contatos existentes
-   - Cada contato pode ter seu próprio idioma configurado
+O `CONNECTION_ID` e gerado automaticamente ao criar a conexao no painel.
 
-3. **Detecção Automática**
-   - Ative/Desative a detecção automática
-   - Configure o tempo de cache
-   - Gerencie exceções e configurações manuais
-
-### Configuração de Timestamps
-1. Acesse: Manager > Configurações > Idiomas e Transcrição
-2. Localize a seção "Timestamps na Transcrição"
-3. Use o toggle para ativar/desativar
-4. As mudanças são aplicadas imediatamente
-
-## 📊 Monitoramento e Estatísticas
-
-### Estatísticas de Idiomas
-O sistema agora oferece estatísticas detalhadas:
-- Total de transcrições por idioma
-- Número de detecções automáticas
-- Divisão entre mensagens enviadas/recebidas
-- Histórico de uso por idioma
-
-### Visualização de Dados
-- Gráficos de uso por idioma
-- Distribuição de idiomas
-- Estatísticas de tradução
-- Performance do sistema
-
-## 🔄 Sistema de Rodízio de Chaves GROQ
-O TranscreveZAP suporta múltiplas chaves GROQ com sistema de rodízio automático para melhor distribuição de carga e redundância.
-
-### Funcionalidades:
-1. Adicione múltiplas chaves GROQ para distribuição de carga
-2. O sistema alterna automaticamente entre as chaves disponíveis
-3. Se uma chave falhar, o sistema usa a próxima disponível
-4. Visualize todas as chaves configuradas no painel
-5. Adicione ou remova chaves sem interromper o serviço
-
-### Como Configurar:
-1. Acesse a seção "Configurações"
-2. Na área "🔑 Gerenciamento de Chaves GROQ":
-   - Adicione a chave principal
-   - Use "Adicionar Nova Chave GROQ" para incluir chaves adicionais
-   - O sistema começará a usar todas as chaves em rodízio automaticamente
-
-### Boas Práticas:
-- Mantenha pelo menos duas chaves ativas para redundância
-- Monitore o uso das chaves pelo painel administrativo
-- Remova chaves expiradas ou inválidas
-- Todas as chaves devem começar com 'gsk_'
-
-## 🔍 **Troubleshooting**
-Se encontrar problemas:
-1. Verifique se todas as variáveis obrigatórias estão configuradas
-2. Ative DEBUG_MODE=true temporariamente
-3. Verifique os logs do container
-4. Certifique-se que as APIs estão acessíveis
-
-### Problemas com Múltiplas Chaves GROQ:
-1. Verifique se todas as chaves começam com 'gsk_'
-2. Confirme se as chaves estão ativas na console GROQ
-3. Monitore os logs para identificar falhas específicas de chaves
-4. Mantenha pelo menos uma chave válida no sistema
-
-### Problemas com Idiomas:
-1. Verifique se o idioma está corretamente selecionado nas configurações
-2. Confirme se a configuração foi salva com sucesso
-3. Reinicie o serviço se as alterações não forem aplicadas
-4. Verifique os logs para confirmar o idioma em uso
-
-## 📝 Notas Adicionais
-
-### Recomendações de Uso
-- Configure idiomas manualmente para contatos frequentes
-- Use detecção automática como fallback
-- Monitore estatísticas de uso
-- Faça backups regulares das configurações
-
-### Limitações Conhecidas
-- Detecção automática requer primeiro áudio
-- Cache limitado a 24 horas
-- Timestamps podem variar em áudios muito longos
-
-## 🤝 Contribuição
-Agradecemos feedback e contribuições! Reporte issues e sugira melhorias em nosso GitHub.
 ---
 
-### 📞 Suporte
-Para suporte adicional ou dúvidas:
-- WhatsApp: [Entre no GRUPO](https://chat.whatsapp.com/L9jB1SlcmQFIVxzN71Y6KG)
-- Email: contato@impacte.ai
-- Site: [impacte.ai](https://impacte.ai)
+## Deploy com Traefik (SSL/HTTPS)
 
-## 📄 **Licença**
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+Para deploy em producao com SSL automatico via Traefik:
+
+```yaml
+services:
+  transcrevezap:
+    image: impacteai/transcrevezap:latest
+    restart: unless-stopped
+    environment:
+      - TZ=America/Sao_Paulo
+      - DATABASE_URL=file:/app/data/transcrevezap.db
+      - REDIS_HOST=redis-transcrevezap
+      - REDIS_PORT=6380
+      - BETTER_AUTH_SECRET=GERE_UMA_CHAVE_ALEATORIA_AQUI
+      - ADMIN_EMAIL=admin@seu.email.com
+      - ADMIN_PASSWORD=sua_senha_segura
+      - NEXT_PUBLIC_APP_URL=https://manager.seudominio.com
+    volumes:
+      - transcrevezap_data:/app/data
+    depends_on:
+      redis-transcrevezap:
+        condition: service_healthy
+    labels:
+      # Painel (Next.js)
+      - "traefik.enable=true"
+      - "traefik.http.routers.tz-web.rule=Host(`manager.seudominio.com`)"
+      - "traefik.http.routers.tz-web.entrypoints=websecure"
+      - "traefik.http.routers.tz-web.tls.certresolver=letsencryptresolver"
+      - "traefik.http.services.tz-web.loadbalancer.server.port=3000"
+      # API (NestJS)
+      - "traefik.http.routers.tz-api.rule=Host(`api.seudominio.com`)"
+      - "traefik.http.routers.tz-api.entrypoints=websecure"
+      - "traefik.http.routers.tz-api.tls.certresolver=letsencryptresolver"
+      - "traefik.http.services.tz-api.loadbalancer.server.port=8005"
+    networks:
+      - sua_rede_externa
+
+  redis-transcrevezap:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --port 6380 --appendonly yes
+    volumes:
+      - redis_transcrevezap_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6380", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sua_rede_externa
+
+volumes:
+  transcrevezap_data:
+  redis_transcrevezap_data:
+
+networks:
+  sua_rede_externa:
+    external: true
+```
+
+**Endpoints com Traefik:**
+- Painel: `https://manager.seudominio.com`
+- Webhook Evolution: `https://api.seudominio.com/webhook/evolution/SEU_CONNECTION_ID`
+- Webhook UAZAPI: `https://api.seudominio.com/webhook/uazapi/SEU_CONNECTION_ID`
+- Webhook ZPRO: `https://api.seudominio.com/webhook/zpro/SEU_CONNECTION_ID`
 
 ---
-### AJUDE CONTRIBUINDO COM O PROJETO, FAÇA O PIX NO QR CODE
+
+## Variaveis de Ambiente
+
+| Variavel | Descricao | Obrigatoria | Padrao |
+|----------|-----------|-------------|--------|
+| `DATABASE_URL` | URL do banco (SQLite ou PostgreSQL) | Sim | `file:/app/data/transcrevezap.db` |
+| `REDIS_HOST` | Host do Redis | Sim | `redis-transcrevezap` |
+| `REDIS_PORT` | Porta do Redis | Sim | `6380` |
+| `BETTER_AUTH_SECRET` | Chave secreta para autenticacao (gere uma aleatoria) | Sim | — |
+| `ADMIN_EMAIL` | Email do admin inicial | Sim | `admin@transcrevezap.local` |
+| `ADMIN_PASSWORD` | Senha do admin inicial | Sim | `admin123` |
+| `NEXT_PUBLIC_APP_URL` | URL publica do painel (para Traefik) | Nao | `http://localhost:3000` |
+| `REDIS_PASSWORD` | Senha do Redis (se autenticado) | Nao | — |
+| `TZ` | Timezone | Nao | `America/Sao_Paulo` |
+| `INTERNAL_API_SECRET` | Secret para proteger API interna (producao) | Nao | — |
+
+### Usando PostgreSQL em vez de SQLite
+
+Descomente o servico `postgres` no docker-compose e altere:
+
+```yaml
+- DATABASE_URL=postgresql://transcrevezap:sua_senha@postgres:5432/transcrevezap
+```
+
+---
+
+## Usando o Painel
+
+### Dashboard
+Visao geral com estatisticas de transcrições, conexoes ativas e graficos.
+
+### Conexoes
+Gerencie suas instancias WhatsApp:
+- Crie conexoes com Evolution API, UAZAPI ou ZPRO
+- Cada conexao tem campos especificos por provedor
+- O `CONNECTION_ID` na URL do webhook e gerado automaticamente
+
+### Configuracoes
+- **Transcricao**: Escolha provider STT, modelo, idioma padrao, timestamps
+- **Sumarizacao**: Escolha provider LLM, modelo, modo de saida, limite de caracteres
+- **Mensagens**: Personalize headers e mensagem de negocio
+- **Processamento**: Modo (todos/apenas grupos), processar proprias mensagens
+- **API Keys**: Gerencie chaves por provider (com mascaramento)
+- **Modelos**: Clique "Atualizar Modelos" para buscar modelos atualizados direto da API do provider
+
+### Webhook Hub
+Distribua webhooks para multiplos destinos:
+- Adicione URLs de destino
+- Monitoramento de saude (taxa de sucesso/erro)
+- Retry automatico com backoff exponencial (5s, 25s, 125s)
+- Dead Letter Queue para falhas persistentes
+- Retry manual de entregas falhas
+
+### Grupos e Bloqueios
+- Permita ou bloqueie grupos especificos
+- Bloqueie usuarios por numero de telefone
+
+### Idiomas
+- Defina idioma padrao do sistema
+- Configure idioma por contato
+- Ative deteccao automatica de idioma
+- Ative traducao automatica
+
+### Usuarios
+- CRUD completo de usuarios com roles customizaveis
+- Cada role tem permissoes granulares por funcionalidade (read/write/delete)
+- Sidebar respeita as permissoes do usuario logado
+
+### Perfil
+- Altere seu nome, email e senha
+
+---
+
+## Providers de IA Suportados
+
+### STT (Speech-to-Text)
+
+| Provider | Modelos | Free Tier | Recomendacao |
+|----------|---------|-----------|--------------|
+| **Groq** | whisper-large-v3-turbo | Sim (30 RPM) | Melhor custo-beneficio |
+| **Google Gemini** | gemini-2.5-flash (multimodal) | Sim (10 RPM) | Transcricao + resumo em 1 chamada |
+| **OpenAI** | gpt-4o-transcribe, gpt-4o-mini-transcribe | Nao | Melhor accuracy |
+| **Deepgram** | nova-3 | Sim ($200 creditos) | Ultra-rapido |
+| **OpenRouter** | Via sub-providers | Alguns modelos | Acesso universal |
+
+### LLM (Sumarizacao)
+
+| Provider | Modelos | Recomendacao |
+|----------|---------|--------------|
+| **Groq** | llama-3.3-70b, gpt-oss-120b | Rapido e gratuito |
+| **Google Gemini** | gemini-2.5-flash, gemini-3.1-pro | Multimodal |
+| **OpenAI** | gpt-5.4-mini, gpt-5.4-nano | Alta qualidade |
+| **OpenRouter** | 300+ modelos | Flexibilidade total |
+
+---
+
+## Providers de WhatsApp Suportados
+
+| Provider | Endpoint Webhook | Documentacao |
+|----------|-----------------|--------------|
+| **Evolution API** | `/webhook/evolution/:connectionId` | [doc.evolution-api.com](https://doc.evolution-api.com) |
+| **UAZAPI** | `/webhook/uazapi/:connectionId` | Documentacao interna |
+| **ZPRO** | `/webhook/zpro/:connectionId` | Documentacao interna |
+
+---
+
+## Idiomas Suportados
+
+Portugues, Ingles, Espanhol, Frances, Alemao, Italiano, Japones, Coreano, Chines, Romeno, Russo, Arabe, Hindi, Holandes, Polones, Turco.
+
+---
+
+## Arquitetura
+
+```
+Container: transcrevezap
++-- Next.js :3000 (Painel administrativo)
++-- NestJS  :8005 (API de webhooks + transcricao)
+
+Container: redis
++-- Redis :6380 (Cache, filas, rate limiting)
+
+Opcional: postgres
++-- PostgreSQL :5432 (alternativa ao SQLite)
+```
+
+**Stack:**
+- **Frontend**: Next.js 15, Tailwind CSS, shadcn/ui
+- **Backend**: NestJS com arquitetura hexagonal
+- **ORM**: Prisma (SQLite padrao / PostgreSQL opcional)
+- **Filas**: BullMQ (Redis)
+- **Auth**: Better Auth com RBAC
+
+---
+
+## Migracao da v2.x para v3.0
+
+Se voce ja usa o TranscreveZAP v2.x (Python), seus dados no Redis podem ser migrados:
+
+```bash
+# Com o Redis v2 rodando, execute:
+docker exec -it transcrevezap pnpm migrate:v2
+```
+
+O script migra: settings, grupos permitidos, usuarios bloqueados, idiomas por contato, webhook redirects e API keys.
+
+---
+
+## Desenvolvimento Local
+
+```bash
+# Pre-requisitos: Node.js 22, pnpm, Docker (para Redis)
+
+# 1. Clone o repositorio
+git clone https://github.com/impacte/transcrevezap.git
+cd transcrevezap
+
+# 2. Instale dependencias
+pnpm install
+
+# 3. Suba o Redis
+docker compose -f docker/docker-compose.dev.yaml up -d
+
+# 4. Configure o banco
+pnpm db:generate
+DATABASE_URL="file:$(pwd)/packages/shared/prisma/dev.db" pnpm db:migrate -- --name init
+
+# 5. Configure variaveis de ambiente
+export DATABASE_URL="file:$(pwd)/packages/shared/prisma/dev.db"
+export REDIS_HOST=localhost
+export REDIS_PORT=6380
+export BETTER_AUTH_SECRET=dev-secret-key-qualquer
+export BETTER_AUTH_URL=http://localhost:3000
+export NEXT_PUBLIC_APP_URL=http://localhost:3000
+export NESTJS_INTERNAL_URL=http://localhost:8005
+
+# 6. Build e inicie
+pnpm --filter @transcrevezap/api build
+node apps/api/dist/main.js &
+pnpm --filter @transcrevezap/web dev
+```
+
+Acesse http://localhost:3000. Credenciais do seed: email do `ADMIN_EMAIL` e senha do `ADMIN_PASSWORD`.
+
+---
+
+## Seguranca
+
+- Autenticacao com Better Auth (cookies httpOnly, sessions server-side)
+- Rate limiting via Redis (5 tentativas / 15 min no login)
+- Senhas com bcrypt (12 salt rounds)
+- API interna protegida por guard (apenas localhost acessa)
+- RBAC granular com permissoes por entidade
+- Security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy)
+- API keys mascaradas no painel
+- Validacao de sessao server-side nas API routes
+
+---
+
+## Contribuicao
+
+1. Fork o repositorio
+2. Crie uma branch: `git checkout -b feat/minha-feature`
+3. Commits em portugues: `git commit -m "feat(escopo): descricao"`
+4. Push e abra um PR
+
+---
+
+## Licenca
+
+MIT — veja [LICENSE](LICENSE).
+
+---
+
+**Desenvolvido por [Impacte AI](https://impacte.ai)** | contato@impacte.ai
+
 ![PIX](./pix.jpeg)
----
