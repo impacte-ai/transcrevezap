@@ -8,6 +8,7 @@ import { CACHE_PORT, CachePort } from '../ports/outbound/cache.port';
 import { TranscriptionFactory, STTProviderName } from '../../adapters/outbound/transcription/transcription.factory';
 import { SummarizationFactory, LLMProviderName } from '../../adapters/outbound/summarization/summarization.factory';
 import { MessagingFactory } from '../../adapters/outbound/messaging/messaging.factory';
+import { ApiKeyRotationService } from './api-key-rotation.service';
 
 @Injectable()
 export class TranscriptionService implements TranscriptionUseCase {
@@ -19,6 +20,7 @@ export class TranscriptionService implements TranscriptionUseCase {
     private readonly sttFactory: TranscriptionFactory,
     private readonly llmFactory: SummarizationFactory,
     private readonly messagingFactory: MessagingFactory,
+    private readonly apiKeyRotation: ApiKeyRotationService,
   ) {}
 
   async process(message: AudioMessage): Promise<TranscriptionEntity> {
@@ -37,23 +39,64 @@ export class TranscriptionService implements TranscriptionUseCase {
     // 4. Detect language
     const language = await this.resolveLanguage(message.remoteJid, settings.language);
 
-    // 5. Transcribe
+    // 5. Transcribe (with key rotation)
     const sttAdapter = this.sttFactory.getAdapter(settings.sttProvider as STTProviderName);
-    const sttApiKey = await this.storage.getSetting(`apikeys.${settings.sttProvider}`);
-    const transcriptionResult = await sttAdapter.transcribe(
-      audioBuffer,
-      message.mimetype || 'audio/ogg',
-      language || undefined,
-      settings.useTimestamps,
-      sttApiKey || undefined,
-    );
+    const sttApiKey = await this.apiKeyRotation.getWorkingKey(settings.sttProvider);
+    let transcriptionResult;
+    try {
+      transcriptionResult = await sttAdapter.transcribe(
+        audioBuffer,
+        message.mimetype || 'audio/ogg',
+        language || undefined,
+        settings.useTimestamps,
+        sttApiKey || undefined,
+      );
+    } catch (error: any) {
+      if (sttApiKey && (error.message?.includes('401') || error.message?.includes('auth') || error.message?.includes('Unauthorized'))) {
+        await this.apiKeyRotation.penalizeKey(settings.sttProvider, sttApiKey);
+        const retrySttApiKey = await this.apiKeyRotation.getWorkingKey(settings.sttProvider);
+        transcriptionResult = await sttAdapter.transcribe(
+          audioBuffer,
+          message.mimetype || 'audio/ogg',
+          language || undefined,
+          settings.useTimestamps,
+          retrySttApiKey || undefined,
+        );
+      } else {
+        throw error;
+      }
+    }
 
-    // 6. Summarize (if needed)
+    // 5.1 Validate transcription content
+    if (!transcriptionResult.text || transcriptionResult.text.trim().length < 10) {
+      throw new Error('Transcrição vazia ou muito curta — áudio pode estar corrompido');
+    }
+
+    // 5.5 Translate if needed
+    const autoTranslation = await this.storage.getSetting('language.autoTranslation');
+    if (autoTranslation === 'true' && transcriptionResult.language && transcriptionResult.language !== settings.language) {
+      try {
+        const llmAdapter = this.llmFactory.getAdapter(settings.llmProvider as LLMProviderName);
+        const llmApiKey = await this.apiKeyRotation.getWorkingKey(settings.llmProvider);
+        const translationResult = await llmAdapter.summarize(
+          `Traduza o seguinte texto de ${transcriptionResult.language} para ${settings.language}. Retorne APENAS o texto traduzido, sem explicações:\n\n${transcriptionResult.text}`,
+          settings.language,
+          llmApiKey || undefined,
+        );
+        if (translationResult.summary && translationResult.summary.length > 10) {
+          transcriptionResult.text = translationResult.summary;
+        }
+      } catch (error: any) {
+        this.logger.warn(`Falha na tradução automática: ${error.message}`);
+      }
+    }
+
+    // 6. Summarize (if needed, with key rotation)
     let summary: string | undefined;
     if (this.shouldSummarize(settings.outputMode, transcriptionResult.text, settings.characterLimit)) {
       try {
         const llmAdapter = this.llmFactory.getAdapter(settings.llmProvider as LLMProviderName);
-        const llmApiKey = await this.storage.getSetting(`apikeys.${settings.llmProvider}`);
+        const llmApiKey = await this.apiKeyRotation.getWorkingKey(settings.llmProvider);
         const sumResult = await llmAdapter.summarize(
           transcriptionResult.text,
           language || 'pt',
@@ -61,8 +104,23 @@ export class TranscriptionService implements TranscriptionUseCase {
         );
         summary = sumResult.summary;
       } catch (error: any) {
+        if (error.message?.includes('401') || error.message?.includes('auth') || error.message?.includes('Unauthorized')) {
+          const llmApiKey = await this.apiKeyRotation.getWorkingKey(settings.llmProvider);
+          if (llmApiKey) {
+            await this.apiKeyRotation.penalizeKey(settings.llmProvider, llmApiKey);
+          }
+        }
         this.logger.warn(`Falha na sumarização: ${error.message}`);
       }
+    }
+
+    // 6.1 Validate summary quality
+    if (summary && summary.length >= transcriptionResult.text.length * 1.5) {
+      this.logger.warn('Resumo maior que o texto original — possível erro do LLM');
+    }
+    if (!summary || summary.length < 10) {
+      this.logger.warn('Resumo vazio, usando transcrição direta');
+      summary = undefined;
     }
 
     // 7. Save transcription

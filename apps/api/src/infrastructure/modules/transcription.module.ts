@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TranscriptionService } from '../../domain/services/transcription.service';
+import { ApiKeyRotationService } from '../../domain/services/api-key-rotation.service';
 import { PrismaStorageAdapter } from '../../adapters/outbound/storage/prisma-storage.adapter';
 import { RedisCacheAdapter } from '../../adapters/outbound/cache/redis-cache.adapter';
 import { GroqTranscriptionAdapter } from '../../adapters/outbound/transcription/groq.adapter';
@@ -41,6 +42,8 @@ import { TRANSCRIPTION_USE_CASE } from '../../domain/ports/inbound/transcription
     UazapiMessagingAdapter,
     ZproMessagingAdapter,
     MessagingFactory,
+    // Key Rotation
+    ApiKeyRotationService,
     // Use Case
     { provide: TRANSCRIPTION_USE_CASE, useClass: TranscriptionService },
   ],
