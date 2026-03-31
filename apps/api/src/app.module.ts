@@ -6,6 +6,7 @@ import { RedisModule } from './infrastructure/modules/redis.module';
 import { TranscriptionModule } from './infrastructure/modules/transcription.module';
 import { WebhookHubModule } from './infrastructure/modules/webhook-hub.module';
 import { ConnectionModule } from './infrastructure/modules/connection.module';
+import { MessagingModule } from './infrastructure/modules/messaging.module';
 import { HealthController } from './health.controller';
 import { InternalController } from './adapters/inbound/internal.controller';
 
@@ -20,6 +21,7 @@ import { InternalController } from './adapters/inbound/internal.controller';
     TranscriptionModule,
     WebhookHubModule,
     ConnectionModule,
+    MessagingModule,
   ],
   controllers: [HealthController, InternalController],
 })
