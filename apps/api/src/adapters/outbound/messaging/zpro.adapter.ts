@@ -37,8 +37,9 @@ export class ZproMessagingAdapter implements MessagingPort, MediaPort {
   }
 
   async downloadAudio(messageId: string): Promise<MediaDownloadResult> {
-    // ZPRO provides audio URL directly in webhook payload
-    throw new Error('ZPRO: use mediaUrl do payload diretamente, não suporta download por ID');
+    // ZPRO provides audio URL directly in webhook payload (mediaUrl field).
+    // If we reach here, the URL was not in the payload — nothing we can do.
+    throw new Error('ZPRO: áudio deve ser baixado via URL do payload. Verifique se o webhook está enviando o campo audio/mediaUrl.');
   }
 
   async getBase64Audio(messageId: string): Promise<MediaDownloadResult> {
@@ -53,19 +54,47 @@ export class ZproMessagingAdapter implements MessagingPort, MediaPort {
 
   async getInstanceStatus(): Promise<{ connected: boolean; phoneNumber?: string }> {
     try {
+      // Try status endpoint
       const response = await this.client.get(`/v2/api/external/${this.apiId}/status`);
       return { connected: response.data?.connected ?? false, phoneNumber: response.data?.phone };
     } catch {
-      return { connected: false };
+      // ZPRO may not have a status endpoint — assume connected if API is reachable
+      try {
+        await this.client.get(`/v2/api/external/${this.apiId}`);
+        return { connected: true };
+      } catch {
+        return { connected: false };
+      }
     }
   }
 
   async connectInstance(phoneNumber?: string): Promise<{ qrcode?: string; pairingCode?: string }> {
-    const response = await this.client.get(`/v2/api/external/${this.apiId}/qrcode`);
-    return { qrcode: response.data?.qrcode };
+    try {
+      const response = await this.client.post(`/v2/api/external/${this.apiId}/qrCodeSession`, {
+        whatsappId: this.apiId,
+      });
+      return { qrcode: response.data?.qrcode || response.data?.base64 };
+    } catch {
+      // Fallback: try GET endpoint for alternative ZPRO versions
+      try {
+        const response = await this.client.get(`/v2/api/external/${this.apiId}/qrcode`);
+        return { qrcode: response.data?.qrcode };
+      } catch {
+        return {};
+      }
+    }
   }
 
   async disconnectInstance(): Promise<void> {
-    await this.client.post(`/v2/api/external/${this.apiId}/disconnect`, {});
+    try {
+      await this.client.post(`/v2/api/external/${this.apiId}/disconnect`, {});
+    } catch {
+      // Try deleteSession as fallback
+      try {
+        await this.client.post(`/v2/api/external/${this.apiId}/deleteSession`, {});
+      } catch {
+        // ZPRO may not support disconnect via API
+      }
+    }
   }
 }
