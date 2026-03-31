@@ -10,11 +10,28 @@ O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o 
 
 ---
 
-## [3.0.0.0] - 2026-03-30
+## [3.0.0.0] - 2026-03-31
 
 ### Refatoracao completa: Python para TypeScript
 
 Reescrita total do TranscreveZAP. Saimos de Python (FastAPI + Streamlit) para TypeScript (Next.js + NestJS) com arquitetura hexagonal, multi-provedor de WhatsApp e IA, e painel administrativo moderno.
+
+### Corrigido (pos-auditoria)
+
+- Evolution API: formato sendText corrigido conforme v2 (campos na raiz, sem wrapper options)
+- Evolution API: formato quoted reply simplificado (apenas key.id)
+- Evolution API: disconnectInstance com fallback DELETE/POST
+- UAZAPI: mapeamento de payload corrigido (campos nested em message/chat, nao na raiz)
+- UAZAPI: campo messageid corrigido (era wa_message_id que nao existe)
+- UAZAPI: replyid com strip de prefixo owner:
+- ZPRO: mapper com fallback para phone/number/from
+- ZPRO: connectInstance corrigido para POST /qrCodeSession
+- ZPRO: status e disconnect com fallbacks resilientes
+- Pipeline de transcricao: sendText agora e chamado apos transcricao (resposta no WhatsApp)
+- API keys: prefixo padronizado apikeys.{provider} (frontend e backend alinhados)
+- Rate limiting migrado de in-memory para Redis (sobrevive restart)
+- Passwords migrados de SHA256 para bcrypt (12 salt rounds)
+- Sumarizacao Gemini: prompts de 3 para 16 idiomas
 
 ### Adicionado
 
