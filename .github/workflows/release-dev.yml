@@ -30,9 +30,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract version from tag
+      - name: Extract version
         id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: |
+          FULL="${GITHUB_REF#refs/tags/v}"
+          echo "FULL=$FULL" >> $GITHUB_OUTPUT
+
+          # Detect channel: dev, rc, or beta
+          if [[ "$FULL" == *"-dev"* ]]; then
+            echo "CHANNEL=dev" >> $GITHUB_OUTPUT
+          elif [[ "$FULL" == *"-rc"* ]]; then
+            echo "CHANNEL=rc" >> $GITHUB_OUTPUT
+          else
+            echo "CHANNEL=beta" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -41,8 +52,8 @@ jobs:
           file: docker/Dockerfile
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.VERSION }}
-            ${{ env.IMAGE_NAME }}:dev
+            ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.FULL }}
+            ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.CHANNEL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -52,21 +63,29 @@ jobs:
           generate_release_notes: true
           prerelease: true
           make_latest: false
-          name: "v${{ steps.version.outputs.VERSION }} (Canary)"
+          name: "v${{ steps.version.outputs.FULL }} (Canary)"
           body: |
-            ## TranscreveZAP v${{ steps.version.outputs.VERSION }} — Canary
+            ## TranscreveZAP v${{ steps.version.outputs.FULL }} — ${{ steps.version.outputs.CHANNEL }}
 
-            **Release de desenvolvimento** — para testes. Nao usar em producao.
+            **Release de desenvolvimento** — para testes. Nao recomendado para producao.
 
             ### Docker
+
             ```bash
-            docker pull impacteai/transcrevezap:${{ steps.version.outputs.VERSION }}
-            # ou
-            docker pull impacteai/transcrevezap:dev
+            # Versao exata dev
+            docker pull impacteai/transcrevezap:${{ steps.version.outputs.FULL }}
+
+            # Sempre a ultima dev
+            docker pull impacteai/transcrevezap:${{ steps.version.outputs.CHANNEL }}
             ```
 
-            ### Diferenca entre tags
-            - `:dev` — sempre a ultima versao de desenvolvimento
-            - `:latest` — sempre a ultima versao estavel de producao
-            - `:X.Y.Z.W` — versao especifica de producao
-            - `:X.Y.Z.W-devN` — versao especifica de desenvolvimento
+            ### Tags no Docker Hub
+
+            | Tag | Descricao |
+            |-----|-----------|
+            | `:${{ steps.version.outputs.FULL }}` | Esta versao exata |
+            | `:dev` | Sempre a ultima versao de desenvolvimento |
+            | `:rc` | Sempre o ultimo release candidate |
+            | `:latest` | Ultima versao **estavel** de producao |
+
+            > Para producao, use sempre `:latest` ou uma versao exata sem sufixo (ex: `:3.0.0.0`).

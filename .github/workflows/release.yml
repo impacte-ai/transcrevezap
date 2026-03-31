@@ -31,9 +31,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract version from tag
+      - name: Extract version parts
         id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: |
+          # Tag: v3.0.0.0 → VERSION=3.0.0.0
+          FULL="${GITHUB_REF#refs/tags/v}"
+          echo "FULL=$FULL" >> $GITHUB_OUTPUT
+
+          # Parse X.Y.Z.W
+          IFS='.' read -r X Y Z W <<< "$FULL"
+          echo "MAJOR=$X" >> $GITHUB_OUTPUT
+          echo "MINOR=$X.$Y" >> $GITHUB_OUTPUT
+          echo "PATCH=$X.$Y.$Z" >> $GITHUB_OUTPUT
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -42,7 +51,10 @@ jobs:
           file: docker/Dockerfile
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.VERSION }}
+            ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.FULL }}
+            ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.PATCH }}
+            ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.MINOR }}
+            ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.MAJOR }}
             ${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -52,17 +64,36 @@ jobs:
         with:
           generate_release_notes: true
           make_latest: true
-          name: "v${{ steps.version.outputs.VERSION }}"
+          name: "v${{ steps.version.outputs.FULL }}"
           body: |
-            ## TranscreveZAP v${{ steps.version.outputs.VERSION }}
+            ## TranscreveZAP v${{ steps.version.outputs.FULL }}
 
             **Release de producao** — testada e homologada.
 
             ### Docker
+
             ```bash
-            docker pull impacteai/transcrevezap:${{ steps.version.outputs.VERSION }}
-            # ou
+            # Versao exata (recomendado para producao)
+            docker pull impacteai/transcrevezap:${{ steps.version.outputs.FULL }}
+
+            # Recebe hotfixes automaticamente
+            docker pull impacteai/transcrevezap:${{ steps.version.outputs.PATCH }}
+
+            # Recebe melhorias automaticamente
+            docker pull impacteai/transcrevezap:${{ steps.version.outputs.MINOR }}
+
+            # Sempre a ultima estavel
             docker pull impacteai/transcrevezap:latest
             ```
+
+            ### Tags disponiveis
+
+            | Tag | Descricao | Atualizacao |
+            |-----|-----------|-------------|
+            | `:${{ steps.version.outputs.FULL }}` | Versao exata | Nunca muda |
+            | `:${{ steps.version.outputs.PATCH }}` | Ultimo hotfix da ${{ steps.version.outputs.PATCH }} | Recebe W (fixes) |
+            | `:${{ steps.version.outputs.MINOR }}` | Ultima melhoria da ${{ steps.version.outputs.MINOR }} | Recebe Z+W |
+            | `:${{ steps.version.outputs.MAJOR }}` | Ultima versao da major ${{ steps.version.outputs.MAJOR }} | Recebe Y+Z+W |
+            | `:latest` | Ultima estavel | Sempre atualiza |
 
             Veja o [CHANGELOG](CHANGELOG.md) para detalhes completos.
