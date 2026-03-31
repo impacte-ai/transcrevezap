@@ -3,6 +3,7 @@ import { CONNECTION_USE_CASE, ConnectionUseCase, CreateConnectionData } from '..
 import { WEBHOOK_HUB_USE_CASE, WebhookHubUseCase } from '../../domain/ports/inbound/webhook-hub.use-case';
 import { STORAGE_PORT, StoragePort } from '../../domain/ports/outbound/storage.port';
 import { CACHE_PORT, CachePort } from '../../domain/ports/outbound/cache.port';
+import { ModelManagementService } from '../../domain/services/model-management.service';
 
 @Controller('internal')
 export class InternalController {
@@ -11,6 +12,7 @@ export class InternalController {
     @Inject(WEBHOOK_HUB_USE_CASE) private readonly webhookHub: WebhookHubUseCase,
     @Inject(STORAGE_PORT) private readonly storage: StoragePort,
     @Inject(CACHE_PORT) private readonly cache: CachePort,
+    private readonly modelManagement: ModelManagementService,
   ) {}
 
   // ---- Connections ----
@@ -156,5 +158,10 @@ export class InternalController {
   @Get('models/:provider/:type')
   async getModels(@Param('provider') provider: string, @Param('type') type: string) {
     return this.storage.getProviderModels(provider, type);
+  }
+
+  @Post('models/:provider/refresh')
+  async refreshModels(@Param('provider') provider: string, @Body() body: { apiKey: string }) {
+    return this.modelManagement.refreshModels(provider, body.apiKey);
   }
 }

@@ -7,6 +7,7 @@ import { TranscriptionModule } from './infrastructure/modules/transcription.modu
 import { WebhookHubModule } from './infrastructure/modules/webhook-hub.module';
 import { ConnectionModule } from './infrastructure/modules/connection.module';
 import { MessagingModule } from './infrastructure/modules/messaging.module';
+import { ModelManagementModule } from './infrastructure/modules/model-management.module';
 import { HealthController } from './health.controller';
 import { InternalController } from './adapters/inbound/internal.controller';
 
@@ -22,6 +23,7 @@ import { InternalController } from './adapters/inbound/internal.controller';
     WebhookHubModule,
     ConnectionModule,
     MessagingModule,
+    ModelManagementModule,
   ],
   controllers: [HealthController, InternalController],
 })
