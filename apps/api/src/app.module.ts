@@ -11,6 +11,7 @@ import { MessagingModule } from './infrastructure/modules/messaging.module';
 import { ModelManagementModule } from './infrastructure/modules/model-management.module';
 import { HealthController } from './health.controller';
 import { InternalController } from './adapters/inbound/internal.controller';
+import { UsersController } from './adapters/inbound/users.controller';
 
 @Module({
   imports: [
@@ -36,6 +37,6 @@ import { InternalController } from './adapters/inbound/internal.controller';
     ModelManagementModule,
     BullModule.registerQueue({ name: 'webhook-deliveries' }),
   ],
-  controllers: [HealthController, InternalController],
+  controllers: [HealthController, InternalController, UsersController],
 })
 export class AppModule {}

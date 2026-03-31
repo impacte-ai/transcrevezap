@@ -1,17 +1,38 @@
-import { UserCog } from 'lucide-react';
+import { api } from '@/lib/api';
+import { UsersClient } from './users-client';
 
-export default function UsersPage() {
-  return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="font-display text-2xl font-bold text-foreground">Usuários & RBAC</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Gerencie usuários, roles e permissões</p>
-      </div>
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card py-16">
-        <UserCog className="h-12 w-12 text-muted-foreground/40" />
-        <p className="mt-4 text-lg font-medium text-muted-foreground">Gestão de usuários</p>
-        <p className="mt-1 text-sm text-muted-foreground/70">CRUD de usuários e roles customizáveis</p>
-      </div>
-    </div>
-  );
+interface Role {
+  id: string;
+  name: string;
+  description?: string;
+  isSystem: boolean;
+  permissions: { id: string; entity: string; actions: string }[];
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  isActive: boolean;
+  roleId: string;
+  role: Role;
+  createdAt: string;
+}
+
+export const dynamic = 'force-dynamic';
+
+export default async function UsersPage() {
+  let users: User[] = [];
+  let roles: Role[] = [];
+
+  try {
+    [users, roles] = await Promise.all([
+      api<User[]>('/users'),
+      api<Role[]>('/users/roles'),
+    ]);
+  } catch (error) {
+    console.error('Erro ao carregar usuarios:', error);
+  }
+
+  return <UsersClient initialUsers={users} initialRoles={roles} />;
 }
