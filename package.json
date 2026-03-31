@@ -22,6 +22,7 @@
     "db:migrate": "pnpm --filter @transcrevezap/shared prisma migrate dev",
     "db:migrate:deploy": "pnpm --filter @transcrevezap/shared prisma migrate deploy",
     "db:seed": "pnpm --filter @transcrevezap/shared prisma db seed",
-    "db:studio": "pnpm --filter @transcrevezap/shared prisma studio"
+    "db:studio": "pnpm --filter @transcrevezap/shared prisma studio",
+    "migrate:v2": "pnpm --filter @transcrevezap/shared migrate:v2"
   }
 }
