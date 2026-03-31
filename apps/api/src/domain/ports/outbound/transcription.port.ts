@@ -6,6 +6,7 @@ export interface TranscriptionPort {
     mimetype: string,
     language?: string,
     withTimestamps?: boolean,
+    apiKey?: string,
   ): Promise<TranscriptionResult>;
 }
 
