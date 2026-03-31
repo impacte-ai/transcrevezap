@@ -4,6 +4,8 @@ export interface SummarizationPort {
   summarize(
     text: string,
     language: string,
+    apiKey?: string,
+    model?: string,
   ): Promise<SummarizationResult>;
 }
 
