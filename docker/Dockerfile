@@ -9,28 +9,13 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN apt-get update && apt-get install -y tzdata redis-tools && rm -rf /var/lib/apt/lists/*
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# ---- Dependencies ----
-FROM base AS deps
-WORKDIR /app
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc turbo.json ./
-COPY apps/api/package.json apps/api/
-COPY apps/web/package.json apps/web/
-COPY packages/shared/package.json packages/shared/
-RUN pnpm install --frozen-lockfile
-
-# ---- Builder ----
+# ---- Build everything in one stage (simpler for pnpm workspaces) ----
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/ ./
 COPY . .
-
-# Generate Prisma client
+RUN pnpm install --frozen-lockfile
 RUN pnpm --filter @transcrevezap/shared prisma generate
-
-# Build NestJS
 RUN pnpm --filter @transcrevezap/api build
-
-# Build Next.js (standalone)
 RUN pnpm --filter @transcrevezap/web build
 
 # ---- Runner ----
@@ -38,18 +23,18 @@ FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Prisma client + CLI + schema
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/packages/shared/prisma ./prisma
+# Copy entire node_modules (pnpm hoists to root + workspace dirs)
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages/shared/node_modules ./packages/shared/node_modules
 
-# NestJS dist
+# Prisma schema + migrations (for migrate deploy at startup)
+COPY --from=builder /app/packages/shared/prisma ./prisma
+
+# NestJS dist + deps
 COPY --from=builder /app/apps/api/dist ./api
 COPY --from=builder /app/apps/api/node_modules ./api/node_modules
 
-# Next.js standalone
+# Next.js standalone + static
 COPY --from=builder /app/apps/web/.next/standalone ./web
 COPY --from=builder /app/apps/web/.next/static ./web/.next/static
 COPY --from=builder /app/apps/web/public ./web/public
