@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-auth';
 
 const NESTJS_URL = process.env.NESTJS_INTERNAL_URL || 'http://localhost:8005';
 
 export async function GET() {
   try {
+    const authResult = await requireAuth();
+    if ('error' in authResult) return authResult.error;
     const response = await fetch(`${NESTJS_URL}/internal/users`, { cache: 'no-store' });
     const data = await response.json();
     return NextResponse.json(data);
@@ -14,6 +17,8 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const authResult = await requireAuth();
+    if ('error' in authResult) return authResult.error;
     const body = await request.json();
     const response = await fetch(`${NESTJS_URL}/internal/users`, {
       method: 'POST',

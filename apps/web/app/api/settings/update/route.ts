@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-auth';
 
 const NESTJS_URL = process.env.NESTJS_INTERNAL_URL || 'http://localhost:8005';
 
 export async function POST(request: NextRequest) {
   try {
+    const authResult = await requireAuth();
+    if ('error' in authResult) return authResult.error;
     const body = await request.json();
     const { key, value } = body;
 
