@@ -1,0 +1,23 @@
+{
+  "name": "@transcrevezap/shared",
+  "version": "3.0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "prisma": "prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.7.0",
+    "typescript": "^5.7.0",
+    "tsx": "^4.19.0"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma",
+    "seed": "tsx prisma/seed.ts"
+  }
+}
