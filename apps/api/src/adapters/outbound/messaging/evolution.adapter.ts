@@ -24,33 +24,21 @@ export class EvolutionMessagingAdapter implements MessagingPort, MediaPort {
   async sendText(options: SendTextOptions): Promise<{ messageId: string }> {
     const url = `${this.apiUrl}/message/sendText/${this.instanceName}`;
 
-    // Try V2 format first, fallback to V1
-    try {
-      const body: Record<string, unknown> = {
-        number: options.to,
-        text: options.text,
-        options: { delay: 1200, presence: 'composing', linkPreview: false },
+    const body: Record<string, unknown> = {
+      number: options.to,
+      text: options.text,
+      delay: 1200,
+      linkPreview: false,
+    };
+
+    if (options.replyToMessageId) {
+      body.quoted = {
+        key: { id: options.replyToMessageId },
       };
-
-      if (options.replyToMessageId) {
-        body.quoted = {
-          key: { remoteJid: options.to, fromMe: false, id: options.replyToMessageId },
-        };
-      }
-
-      const response = await axios.post(url, body, { headers: this.headers, timeout: 15000 });
-      return { messageId: response.data?.key?.id || response.data?.messageId || 'sent' };
-    } catch (error: any) {
-      // Fallback to V1 format
-      const body: Record<string, unknown> = {
-        number: options.to,
-        options: { delay: 1200, presence: 'composing', linkPreview: false },
-        textMessage: { text: options.text },
-      };
-
-      const response = await axios.post(url, body, { headers: this.headers, timeout: 15000 });
-      return { messageId: response.data?.key?.id || 'sent' };
     }
+
+    const response = await axios.post(url, body, { headers: this.headers, timeout: 15000 });
+    return { messageId: response.data?.key?.id || response.data?.messageId || 'sent' };
   }
 
   async downloadAudio(messageId: string): Promise<MediaDownloadResult> {
@@ -106,6 +94,11 @@ export class EvolutionMessagingAdapter implements MessagingPort, MediaPort {
 
   async disconnectInstance(): Promise<void> {
     const url = `${this.apiUrl}/instance/logout/${this.instanceName}`;
-    await axios.delete(url, { headers: this.headers, timeout: 10000 });
+    try {
+      await axios.delete(url, { headers: this.headers, timeout: 10000 });
+    } catch {
+      // Fallback to POST for some Evolution API versions
+      await axios.post(`${this.apiUrl}/instance/logout/${this.instanceName}`, {}, { headers: this.headers, timeout: 10000 });
+    }
   }
 }
