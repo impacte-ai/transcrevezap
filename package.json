@@ -1,0 +1,21 @@
+{
+  "name": "transcrevezap",
+  "version": "3.0.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.6.5",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "test:e2e": "turbo test:e2e",
+    "db:generate": "pnpm --filter @transcrevezap/shared prisma generate",
+    "db:migrate": "pnpm --filter @transcrevezap/shared prisma migrate dev",
+    "db:migrate:deploy": "pnpm --filter @transcrevezap/shared prisma migrate deploy",
+    "db:seed": "pnpm --filter @transcrevezap/shared prisma db seed",
+    "db:studio": "pnpm --filter @transcrevezap/shared prisma studio"
+  }
+}
