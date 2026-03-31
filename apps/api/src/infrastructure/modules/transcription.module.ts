@@ -11,6 +11,10 @@ import { TranscriptionFactory } from '../../adapters/outbound/transcription/tran
 import { OpenAICompatibleSummarizationAdapter } from '../../adapters/outbound/summarization/openai-compatible.adapter';
 import { GeminiChatAdapter } from '../../adapters/outbound/summarization/gemini-chat.adapter';
 import { SummarizationFactory } from '../../adapters/outbound/summarization/summarization.factory';
+import { EvolutionMessagingAdapter } from '../../adapters/outbound/messaging/evolution.adapter';
+import { UazapiMessagingAdapter } from '../../adapters/outbound/messaging/uazapi.adapter';
+import { ZproMessagingAdapter } from '../../adapters/outbound/messaging/zpro.adapter';
+import { MessagingFactory } from '../../adapters/outbound/messaging/messaging.factory';
 import { STORAGE_PORT } from '../../domain/ports/outbound/storage.port';
 import { CACHE_PORT } from '../../domain/ports/outbound/cache.port';
 import { TRANSCRIPTION_USE_CASE } from '../../domain/ports/inbound/transcription.use-case';
@@ -32,9 +36,14 @@ import { TRANSCRIPTION_USE_CASE } from '../../domain/ports/inbound/transcription
     OpenAICompatibleSummarizationAdapter,
     GeminiChatAdapter,
     SummarizationFactory,
+    // Messaging Adapters
+    EvolutionMessagingAdapter,
+    UazapiMessagingAdapter,
+    ZproMessagingAdapter,
+    MessagingFactory,
     // Use Case
     { provide: TRANSCRIPTION_USE_CASE, useClass: TranscriptionService },
   ],
-  exports: [TRANSCRIPTION_USE_CASE, STORAGE_PORT, CACHE_PORT, TranscriptionFactory, SummarizationFactory],
+  exports: [TRANSCRIPTION_USE_CASE, STORAGE_PORT, CACHE_PORT, TranscriptionFactory, SummarizationFactory, MessagingFactory],
 })
 export class TranscriptionModule {}

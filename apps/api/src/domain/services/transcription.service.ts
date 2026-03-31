@@ -7,6 +7,7 @@ import { STORAGE_PORT, StoragePort } from '../ports/outbound/storage.port';
 import { CACHE_PORT, CachePort } from '../ports/outbound/cache.port';
 import { TranscriptionFactory, STTProviderName } from '../../adapters/outbound/transcription/transcription.factory';
 import { SummarizationFactory, LLMProviderName } from '../../adapters/outbound/summarization/summarization.factory';
+import { MessagingFactory } from '../../adapters/outbound/messaging/messaging.factory';
 
 @Injectable()
 export class TranscriptionService implements TranscriptionUseCase {
@@ -17,6 +18,7 @@ export class TranscriptionService implements TranscriptionUseCase {
     @Inject(CACHE_PORT) private readonly cache: CachePort,
     private readonly sttFactory: TranscriptionFactory,
     private readonly llmFactory: SummarizationFactory,
+    private readonly messagingFactory: MessagingFactory,
   ) {}
 
   async process(message: AudioMessage): Promise<TranscriptionEntity> {
@@ -82,7 +84,14 @@ export class TranscriptionService implements TranscriptionUseCase {
 
     const saved = await this.storage.createTranscription(transcription);
 
-    // 8. Update stats
+    // 8. Send response to WhatsApp
+    try {
+      await this.sendResponse(message, saved, settings);
+    } catch (error: any) {
+      this.logger.error(`Falha ao enviar resposta WhatsApp: ${error.message}`);
+    }
+
+    // 9. Update stats
     await this.cache.increment('stats:total');
     const todayKey = `stats:daily:${new Date().toISOString().split('T')[0]}`;
     await this.cache.increment(todayKey);
@@ -174,5 +183,69 @@ export class TranscriptionService implements TranscriptionUseCase {
       default:
         return false;
     }
+  }
+
+  private async sendResponse(
+    message: AudioMessage,
+    transcription: TranscriptionEntity,
+    settings: Awaited<ReturnType<typeof this.loadSettings>>,
+  ): Promise<void> {
+    // Get connection details
+    const connection = await this.storage.findConnectionById(message.connectionId);
+    if (!connection) {
+      this.logger.warn(`Conexão não encontrada: ${message.connectionId}`);
+      return;
+    }
+
+    // Get messaging adapter
+    const adapter = this.messagingFactory.getAdapter(connection.provider, {
+      apiUrl: connection.apiUrl,
+      apiKey: connection.apiKey || undefined,
+      instanceName: connection.instanceName || undefined,
+      providerToken: connection.providerToken || undefined,
+    });
+
+    // Load messaging settings
+    const summaryHeader = await this.storage.getSetting('messaging.summaryHeader') || '📝 *Resumo do áudio:*';
+    const transcriptionHeader = await this.storage.getSetting('messaging.transcriptionHeader') || '🎙️ *Transcrição do áudio:*';
+    const businessMessage = await this.storage.getSetting('messaging.businessMessage') || '';
+
+    let responseText = '';
+
+    switch (settings.outputMode) {
+      case 'summary_only':
+        responseText = `${summaryHeader}\n\n${transcription.summary || transcription.originalText}`;
+        break;
+      case 'transcription_only':
+        responseText = `${transcriptionHeader}\n\n${transcription.originalText}`;
+        break;
+      case 'both':
+        if (transcription.summary) {
+          responseText = `${summaryHeader}\n\n${transcription.summary}\n\n${transcriptionHeader}\n\n${transcription.originalText}`;
+        } else {
+          responseText = `${transcriptionHeader}\n\n${transcription.originalText}`;
+        }
+        break;
+      case 'smart':
+        if (transcription.summary) {
+          responseText = `${summaryHeader}\n\n${transcription.summary}`;
+        } else {
+          responseText = `${transcriptionHeader}\n\n${transcription.originalText}`;
+        }
+        break;
+    }
+
+    if (businessMessage) {
+      responseText += `\n\n${businessMessage}`;
+    }
+
+    // Send as reply to original audio message
+    const result = await adapter.sendText({
+      to: message.remoteJid,
+      text: responseText,
+      replyToMessageId: message.messageId,
+    });
+
+    this.logger.log(`Resposta enviada para ${message.remoteJid}: ${result.messageId}`);
   }
 }

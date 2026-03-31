@@ -217,7 +217,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
   }, [settings, saveSetting]);
 
   const saveApiKey = useCallback(async (provider: string) => {
-    const key = `apikey.${provider}`;
+    const key = `apikeys.${provider}`;
     const value = apiKeyValues[provider] ?? '';
     setSectionStatus((prev) => ({ ...prev, apikeys: 'saving' }));
     try {
@@ -234,7 +234,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
   }, [apiKeyValues, saveSetting]);
 
   const removeApiKey = useCallback(async (provider: string) => {
-    const key = `apikey.${provider}`;
+    const key = `apikeys.${provider}`;
     setSectionStatus((prev) => ({ ...prev, apikeys: 'saving' }));
     try {
       await saveSetting(key, '');
@@ -382,7 +382,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
         </div>
         <div className="divide-y divide-border">
           {API_KEY_PROVIDERS.map((provider) => {
-            const storedValue = settings[`apikey.${provider}`] ?? '';
+            const storedValue = settings[`apikeys.${provider}`] ?? '';
             const hasKey = !!storedValue;
             const isEditing = apiKeyEditing[provider] ?? false;
 
