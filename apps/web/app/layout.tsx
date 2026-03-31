@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ThemeProvider } from '@/lib/theme';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -20,7 +21,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -16,8 +16,11 @@ import {
   ScrollText,
   LogOut,
   UserCircle,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTheme } from '@/lib/theme';
 
 const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -56,6 +59,7 @@ function NavItem({ href, label, icon: Icon, isActive }: { href: string; label: s
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { theme, toggleTheme } = useTheme();
 
   const isActive = (href: string) =>
     pathname === href || (href !== '/dashboard' && pathname.startsWith(href));
@@ -103,6 +107,17 @@ export function Sidebar() {
           icon={UserCircle}
           isActive={isActive('/dashboard/profile')}
         />
+        <button
+          onClick={toggleTheme}
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+        >
+          {theme === 'light' ? (
+            <Moon className="h-[18px] w-[18px]" />
+          ) : (
+            <Sun className="h-[18px] w-[18px]" />
+          )}
+          {theme === 'light' ? 'Modo Escuro' : 'Modo Claro'}
+        </button>
         <button
           onClick={() => signOut().then(() => window.location.href = '/login')}
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors"

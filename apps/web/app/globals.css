@@ -22,6 +22,21 @@
   --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
+.dark {
+  --color-background: #09090b;
+  --color-foreground: #fafafa;
+  --color-card: #0a0a0c;
+  --color-card-foreground: #fafafa;
+  --color-secondary: #1a1a1e;
+  --color-secondary-foreground: #fafafa;
+  --color-muted: #1a1a1e;
+  --color-muted-foreground: #a1a1aa;
+  --color-accent: #1e3a5f;
+  --color-accent-foreground: #93c5fd;
+  --color-border: #27272a;
+  --color-input: #27272a;
+}
+
 * {
   border-color: var(--color-border);
 }
