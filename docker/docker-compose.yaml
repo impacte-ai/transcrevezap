@@ -1,0 +1,64 @@
+services:
+  transcrevezap:
+    image: impacteai/transcrevezap:3.0.0
+    container_name: transcrevezap
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-8005}:8005"
+      - "${WEB_PORT:-3000}:3000"
+    environment:
+      - TZ=America/Sao_Paulo
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/data/transcrevezap.db
+      - REDIS_HOST=redis-transcrevezap
+      - REDIS_PORT=6380
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_DB=${REDIS_DB:-0}
+      - API_PORT=8005
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@transcrevezap.local}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      - API_DOMAIN=${API_DOMAIN:-}
+      - MANAGER_DOMAIN=${MANAGER_DOMAIN:-}
+    volumes:
+      - transcrevezap_data:/app/data
+    depends_on:
+      redis-transcrevezap:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tz-web.rule=Host(`${MANAGER_DOMAIN}`)"
+      - "traefik.http.routers.tz-web.entrypoints=${SSL_ENTRYPOINT:-websecure}"
+      - "traefik.http.routers.tz-web.tls.certresolver=${SSL_RESOLVER:-letsencryptresolver}"
+      - "traefik.http.services.tz-web.loadbalancer.server.port=3000"
+      - "traefik.http.routers.tz-api.rule=Host(`${API_DOMAIN}`)"
+      - "traefik.http.routers.tz-api.entrypoints=${SSL_ENTRYPOINT:-websecure}"
+      - "traefik.http.routers.tz-api.tls.certresolver=${SSL_RESOLVER:-letsencryptresolver}"
+      - "traefik.http.services.tz-api.loadbalancer.server.port=8005"
+    networks:
+      - transcrevezap-net
+
+  redis-transcrevezap:
+    image: redis:7-alpine
+    container_name: redis-transcrevezap
+    restart: unless-stopped
+    command: redis-server --port 6380 --appendonly yes
+    ports:
+      - "${REDIS_PORT:-6380}:6380"
+    volumes:
+      - redis_transcrevezap_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6380", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - transcrevezap-net
+
+volumes:
+  transcrevezap_data:
+  redis_transcrevezap_data:
+
+networks:
+  transcrevezap-net:
+    name: ${NETWORK_NAME:-transcrevezap-net}
+    external: false

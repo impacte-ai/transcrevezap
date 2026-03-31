@@ -1,0 +1,17 @@
+services:
+  redis-transcrevezap:
+    image: redis:7-alpine
+    container_name: redis-transcrevezap-dev
+    ports:
+      - "6380:6380"
+    command: redis-server --port 6380 --appendonly yes
+    volumes:
+      - redis_dev_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6380", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  redis_dev_data:
