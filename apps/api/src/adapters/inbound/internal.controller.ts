@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Delete, Body, Param, Query, Inject, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, Query, Inject, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
+import { InternalApiGuard } from '../../infrastructure/guards/api-key.guard';
 import { Queue } from 'bullmq';
 import { CONNECTION_USE_CASE, ConnectionUseCase, CreateConnectionData } from '../../domain/ports/inbound/connection.use-case';
 import { WEBHOOK_HUB_USE_CASE, WebhookHubUseCase } from '../../domain/ports/inbound/webhook-hub.use-case';
@@ -8,6 +9,7 @@ import { CACHE_PORT, CachePort } from '../../domain/ports/outbound/cache.port';
 import { ModelManagementService } from '../../domain/services/model-management.service';
 
 @Controller('internal')
+@UseGuards(InternalApiGuard)
 export class InternalController {
   constructor(
     @Inject(CONNECTION_USE_CASE) private readonly connections: ConnectionUseCase,

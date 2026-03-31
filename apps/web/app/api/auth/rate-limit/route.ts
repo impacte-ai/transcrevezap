@@ -3,7 +3,7 @@ import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-  const result = checkRateLimit(ip);
+  const result = await checkRateLimit(ip);
 
   if (!result.allowed) {
     return NextResponse.json(

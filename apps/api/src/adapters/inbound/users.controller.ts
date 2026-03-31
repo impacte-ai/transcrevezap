@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { PrismaService } from '../../infrastructure/modules/prisma.service';
-import { createHash, randomBytes, randomUUID, scrypt } from 'crypto';
+import { randomBytes, randomUUID, scrypt } from 'crypto';
+import * as bcrypt from 'bcryptjs';
+import { InternalApiGuard } from '../../infrastructure/guards/api-key.guard';
 
 function hashScrypt(password: string, salt: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -12,6 +14,7 @@ function hashScrypt(password: string, salt: string): Promise<Buffer> {
 }
 
 @Controller('internal/users')
+@UseGuards(InternalApiGuard)
 export class UsersController {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -41,7 +44,7 @@ export class UsersController {
       data: {
         name: body.name,
         email: body.email,
-        passwordHash: createHash('sha256').update(body.password).digest('hex'),
+        passwordHash: bcrypt.hashSync(body.password, 12),
         roleId: body.roleId,
         isActive: true,
       },
@@ -107,7 +110,7 @@ export class UsersController {
     // Update RBAC password
     await this.prisma.user.update({
       where: { id },
-      data: { passwordHash: createHash('sha256').update(body.password).digest('hex') },
+      data: { passwordHash: bcrypt.hashSync(body.password, 12) },
     });
 
     // Update Better Auth password
