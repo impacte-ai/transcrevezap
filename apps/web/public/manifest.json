@@ -1,0 +1,13 @@
+{
+  "name": "TranscreveZAP",
+  "short_name": "TranscreveZAP",
+  "description": "Transcrição inteligente de áudios do WhatsApp com IA",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/static/fluxo.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

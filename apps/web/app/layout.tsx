@@ -3,9 +3,29 @@ import { ThemeProvider } from '@/lib/theme';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'TranscreveZAP',
-  description: 'Transcrição inteligente de áudios do WhatsApp',
-  icons: { icon: '/static/fluxo.png' },
+  title: {
+    default: 'TranscreveZAP',
+    template: '%s | TranscreveZAP',
+  },
+  description: 'Plataforma inteligente de transcrição e sumarização de áudios do WhatsApp com IA. Multi-provedor: Evolution API, UAZAPI, ZPRO. Multi-IA: Groq, OpenAI, Gemini, Deepgram, OpenRouter.',
+  keywords: ['whatsapp', 'transcrição', 'áudio', 'ia', 'whisper', 'groq', 'evolution api', 'transcrevezap'],
+  authors: [{ name: 'Impacte AI', url: 'https://impacte.ai' }],
+  creator: 'Impacte AI',
+  publisher: 'Impacte AI',
+  openGraph: {
+    title: 'TranscreveZAP',
+    description: 'Transcrição inteligente de áudios do WhatsApp com IA',
+    url: 'https://github.com/impacte/transcrevezap',
+    siteName: 'TranscreveZAP',
+    locale: 'pt_BR',
+    type: 'website',
+  },
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({

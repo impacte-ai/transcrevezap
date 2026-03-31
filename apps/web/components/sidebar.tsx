@@ -68,8 +68,8 @@ export function Sidebar() {
     <aside className="flex h-screen w-[260px] flex-col border-r border-border bg-card">
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-6">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-          <Image src="/static/fluxo.png" alt="TranscreveZAP" width={28} height={28} className="rounded-lg" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-white/90 shadow-sm">
+          <Image src="/static/fluxo.png" alt="TranscreveZAP" width={32} height={32} className="rounded-lg" />
         </div>
         <div>
           <span className="font-display text-lg font-bold text-foreground">TranscreveZAP</span>
