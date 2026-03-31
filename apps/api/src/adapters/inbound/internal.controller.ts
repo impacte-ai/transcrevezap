@@ -176,12 +176,31 @@ export class InternalController {
   // ---- Languages ----
 
   @Get('languages')
-  async getContactLanguages() {
-    // Returns all configured contact languages from settings
+  async getLanguageConfig() {
     const autoDetection = await this.storage.getSetting('language.autoDetection');
     const autoTranslation = await this.storage.getSetting('language.autoTranslation');
     const defaultLanguage = await this.storage.getSetting('transcription.language');
     return { autoDetection, autoTranslation, defaultLanguage };
+  }
+
+  @Get('languages/contacts')
+  async getContactLanguages() {
+    return this.storage.getAllContactLanguages();
+  }
+
+  @Post('languages/contacts')
+  async setContactLanguage(@Body() body: { contactJid: string; language: string }) {
+    if (!body.contactJid || !body.language) {
+      throw new HttpException('contactJid e language são obrigatórios', HttpStatus.BAD_REQUEST);
+    }
+    await this.storage.setContactLanguage(body.contactJid, body.language, false);
+    return { success: true };
+  }
+
+  @Delete('languages/contacts/:jid')
+  async deleteContactLanguage(@Param('jid') jid: string) {
+    await this.storage.deleteContactLanguage(jid);
+    return { success: true };
   }
 
   // ---- Provider Models ----

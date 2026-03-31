@@ -211,6 +211,16 @@ export class PrismaStorageAdapter implements StoragePort {
     });
   }
 
+  async getAllContactLanguages(): Promise<Array<{ contactJid: string; language: string; autoDetected: boolean; confidence?: number | null; updatedAt: Date }>> {
+    return this.prisma.contactLanguage.findMany({
+      orderBy: { updatedAt: 'desc' },
+    });
+  }
+
+  async deleteContactLanguage(jid: string): Promise<void> {
+    await this.prisma.contactLanguage.deleteMany({ where: { contactJid: jid } });
+  }
+
   // ---- Provider Models ----
 
   async getProviderModels(provider: string, type: string): Promise<Array<{ modelId: string; name: string; metadata?: string }>> {

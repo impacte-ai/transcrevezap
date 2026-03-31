@@ -48,6 +48,8 @@ export interface StoragePort {
   // Contact Language
   getContactLanguage(jid: string): Promise<string | null>;
   setContactLanguage(jid: string, language: string, autoDetected?: boolean, confidence?: number): Promise<void>;
+  getAllContactLanguages(): Promise<Array<{ contactJid: string; language: string; autoDetected: boolean; confidence?: number | null; updatedAt: Date }>>;
+  deleteContactLanguage(jid: string): Promise<void>;
 
   // Provider Models
   getProviderModels(provider: string, type: string): Promise<Array<{ modelId: string; name: string; metadata?: string }>>;
