@@ -3,7 +3,7 @@
   "version": "3.0.0",
   "private": true,
   "scripts": {
-    "build": "nest build",
+    "build": "rm -rf dist tsconfig.build.tsbuildinfo && nest build",
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "test": "jest",

@@ -1,9 +1,8 @@
 .env
 *.pyc
-docker-composer.yaml
+/docker-composer.yaml
 GPT.postman_collection.json
 .venv/
-.gitignore
 deploy_producao.sh
 /Dockerfile
 manager_atualizar.py
@@ -21,11 +20,17 @@ node_modules/
 dist/
 *.tsbuildinfo
 
+# Turbo cache
+.turbo/
+
+# Next.js
+.next/
+
+# Coverage
+coverage/
+
 # Database files (generated)
 *.db
 *.db-journal
 *.db-wal
 *.db-shm
-
-# Lock file (managed by pnpm)
-pnpm-lock.yaml

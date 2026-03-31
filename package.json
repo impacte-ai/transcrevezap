@@ -9,6 +9,9 @@
   "pnpm": {
     "onlyBuiltDependencies": ["@nestjs/core", "@prisma/client", "@prisma/engines", "esbuild", "msgpackr-extract", "prisma"]
   },
+  "devDependencies": {
+    "turbo": "^2.5.0"
+  },
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
