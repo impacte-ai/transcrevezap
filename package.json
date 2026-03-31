@@ -7,7 +7,7 @@
     "node": ">=22.0.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["@prisma/client", "@prisma/engines", "esbuild", "prisma"]
+    "onlyBuiltDependencies": ["@nestjs/core", "@prisma/client", "@prisma/engines", "esbuild", "msgpackr-extract", "prisma"]
   },
   "scripts": {
     "dev": "turbo dev",

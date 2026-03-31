@@ -17,6 +17,10 @@ docs/
 # Dependencies
 node_modules/
 
+# Build output
+dist/
+*.tsbuildinfo
+
 # Database files (generated)
 *.db
 *.db-journal
